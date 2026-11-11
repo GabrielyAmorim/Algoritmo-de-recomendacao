@@ -1,14 +1,9 @@
 #include "listaCompras.h"
 #include <stdio.h>
 
-int lerArquivo(int argc, char *argv[]){
-   
-    if (argc != 2) {
-        printf("Uso: %s <arquivo.csv>\n", argv[0]);
-        return 1;
-    }
+int lerArquivo(ListaCompras *lista, char *nomeArquivo){
 
-    FILE *arquivo = fopen(argv[1], "r");
+    FILE *arquivo = fopen(nomeArquivo, "r");
 
     if (arquivo == NULL) {
         perror("Erro ao abrir o arquivo");
@@ -22,7 +17,10 @@ int lerArquivo(int argc, char *argv[]){
 
     fscanf(arquivo, "%*[^\n]");
 
-    fscanf(arquivo, " %8[^,],%19[^,],%d,%199[^\r\n]", data, cliente, &produto, nome);
+    int linhas = 1;
+    while (fscanf(arquivo, " %8[^,],%19[^,],%d,%199[^\r\n]", data, cliente, &produto, nome) == 4){
+        int indiceCliente;
+    }
  
     fclose(arquivo);
     return 0;

@@ -3,7 +3,6 @@
 
 #include <map>
 #include <vector>
-#include <algorithm>
 #include <string>
 
 using namespace std;
@@ -16,7 +15,7 @@ typedef struct{
     vector<vector<int>> compras;
 } ListaCompras;
 
-int lerArquivo(int, char *);
-void registroCodigos();
+int lerArquivo(ListaCompras, const char *);
+void exibeLista(const ListaCompras *);
 
 #endif
