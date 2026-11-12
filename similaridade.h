@@ -9,8 +9,7 @@ typedef struct{
     int** similaridade;
 } Similaridade;
 
-void multiplicaMatriz(int**, int**);
-void calculaTransposta(int**;);
+void calculaJaccard(int**, int**);
 void calculaInterseccao(int**, int**);
 void calculaSimilaridade(int**, int**);
 

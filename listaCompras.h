@@ -13,9 +13,11 @@ typedef struct{
     vector<string> codigoProdutos;
     map<string, int> mapaProdutos;
     vector<vector<int>> compras;
+    int** matrizCompras;
 } ListaCompras;
 
 int lerArquivo(ListaCompras *, const char *);
+void criaMatrizCompras(ListaCompras *);
 void exibeLista(const ListaCompras *);
 
 #endif

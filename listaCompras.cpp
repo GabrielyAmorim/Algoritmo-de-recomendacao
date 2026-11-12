@@ -62,6 +62,30 @@ int lerArquivo(ListaCompras *lista, const char *nomeArquivo){
     return 0;
 }
 
+void criaMatrizCompras(ListaCompras *lista){
+    int n_clientes = lista->codigoClientes.size();
+    int n_produtos = lista->codigoProdutos.size();
+
+
+    lista->matrizCompras = (int**)malloc(n_clientes * sizeof(int*));
+
+    for (int i = 0; i < n_clientes; i++){
+        lista->matrizCompras[i] = (int*)malloc(n_produtos * sizeof(int));
+        for (int j = 0; j < n_produtos; j++){
+            lista->matrizCompras[i][j] = 0;
+        }
+    }
+
+    for (int i = 0; i < n_clientes; i++){
+        for (int j = 0; j < lista->compras[i].size(); j++){
+            lista->matrizCompras[i][lista->compras[i][j]] = 1;
+        }
+
+    }
+
+
+}
+
 void exibeLista(const ListaCompras * lista){
 
    for(int i = 0; i < lista->codigoClientes.size(); i++){
