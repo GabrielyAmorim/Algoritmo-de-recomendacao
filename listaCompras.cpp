@@ -20,8 +20,6 @@ int lerArquivo(ListaCompras *lista, const char *nomeArquivo){
 
     fscanf(arquivo, "%*[^\n]");
 
-    int linhas = 1;
-
     while(fscanf(arquivo, " %8[^,],%19[^,],%6[^,],%199[^\r\n]", data, cliente, produto, nome) == 4){
         int indiceCliente;
         int indiceProduto;
@@ -53,9 +51,7 @@ int lerArquivo(ListaCompras *lista, const char *nomeArquivo){
         }
         if(i == lista->compras[indiceCliente].size()){
             lista->compras[indiceCliente].push_back(indiceProduto);
-        } 
-        
-        linhas ++;
+        }
     }
  
     fclose(arquivo);
@@ -66,24 +62,21 @@ void criaMatrizCompras(ListaCompras *lista){
     int n_clientes = lista->codigoClientes.size();
     int n_produtos = lista->codigoProdutos.size();
 
-
     lista->matrizCompras = (int**)malloc(n_clientes * sizeof(int*));
 
-    for (int i = 0; i < n_clientes; i++){
+    for(int i = 0; i < n_clientes; i++){
         lista->matrizCompras[i] = (int*)malloc(n_produtos * sizeof(int));
         for (int j = 0; j < n_produtos; j++){
             lista->matrizCompras[i][j] = 0;
         }
     }
 
-    for (int i = 0; i < n_clientes; i++){
+    for(int i = 0; i < n_clientes; i++){
         for (int j = 0; j < lista->compras[i].size(); j++){
             lista->matrizCompras[i][lista->compras[i][j]] = 1;
         }
 
     }
-
-
 }
 
 void exibeLista(const ListaCompras * lista){

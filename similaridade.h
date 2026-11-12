@@ -1,16 +1,14 @@
-#define SIMILARIDADE_H
 #ifndef SIMILARIDADE_H
+#define SIMILARIDADE_H
 #include "listaCompras.h"
 
 typedef struct{
-    int** compras_binario;
-    int** compras_transposta;
-    int** interseccao;
-    int** similaridade;
+    int** matrizInterseccao;
+    double** matrizSimilaridade;
 } Similaridade;
 
-void calculaJaccard(int**, int**);
 void calculaInterseccao(int**, int**);
+void calculaJaccard(int**, int**);
 void calculaSimilaridade(int**, int**);
 
 #endif
