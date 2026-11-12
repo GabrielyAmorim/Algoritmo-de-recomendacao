@@ -63,9 +63,18 @@ void criaMatrizCompras(ListaCompras *lista){
     int n_produtos = lista->codigoProdutos.size();
 
     lista->matrizCompras = (int**)malloc(n_clientes * sizeof(int*));
+    if (lista->matrizCompras == NULL){
+        printf("Erro ao alocar memoria.");
+        return;
+    }
 
     for(int i = 0; i < n_clientes; i++){
         lista->matrizCompras[i] = (int*)malloc(n_produtos * sizeof(int));
+        if (lista->matrizCompras[i] == NULL){
+        printf("Erro ao alocar memoria.");
+        return;
+    }
+
         for (int j = 0; j < n_produtos; j++){
             lista->matrizCompras[i][j] = 0;
         }
