@@ -19,7 +19,7 @@ int lerArquivo(ListaCompras *lista, char *nomeArquivo){
 
     int linhas = 1;
 
-    while(fscanf(arquivo, " %8[^,],%19[^,],d,%199[^\r\n]", data, cliente, &produto, nome) == 4){
+    while(fscanf(arquivo, " %8[^,],%19[^,],%6[^,],%199[^\r\n]", data, cliente, produto, nome) == 4){
         int indiceCliente;
         int indiceProduto;
 
@@ -28,7 +28,6 @@ int lerArquivo(ListaCompras *lista, char *nomeArquivo){
         } 
         else{
             indiceCliente = lista->codigoClientes.size();
-
             lista->codigoClientes.push_back(cliente);
             lista->mapaClientes[cliente] = indiceCliente;
             lista->compras.push_back(vector<int>());
@@ -43,6 +42,16 @@ int lerArquivo(ListaCompras *lista, char *nomeArquivo){
             lista->mapaProdutos[produto] = indiceProduto;
         }
 
+        int i;
+        for(i = 0; i < lista->compras[indiceCliente].size(); i++){
+            if(lista->compras[indiceCliente][i] == indiceProduto){
+                break;
+            }
+        }
+        if(i == lista->compras[indiceCliente].size()){
+            lista->compras[indiceCliente].push_back(indiceProduto);
+        } 
+        
         linhas ++;
     }
  
