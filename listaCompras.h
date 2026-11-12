@@ -15,7 +15,7 @@ typedef struct{
     vector<vector<int>> compras;
 } ListaCompras;
 
-int lerArquivo(ListaCompras, const char *);
+int lerArquivo(ListaCompras *, const char *);
 void exibeLista(const ListaCompras *);
 
 #endif

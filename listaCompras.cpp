@@ -1,7 +1,10 @@
 #include "listaCompras.h"
 #include <stdio.h>
+#include <iostream>
 
-int lerArquivo(ListaCompras *lista, char *nomeArquivo){
+using namespace std;
+
+int lerArquivo(ListaCompras *lista, const char *nomeArquivo){
 
     FILE *arquivo = fopen(nomeArquivo, "r");
 
@@ -57,4 +60,18 @@ int lerArquivo(ListaCompras *lista, char *nomeArquivo){
  
     fclose(arquivo);
     return 0;
+}
+
+void exibeLista(const ListaCompras * lista){
+
+   for(int i = 0; i < lista->codigoClientes.size(); i++){
+        cout << "Cliente: " << lista->codigoClientes[i] << endl;
+        cout << "Itens:" << endl;
+
+        for(int j = 0; j < lista->compras[i].size(); j++){
+            cout << " " << lista->codigoProdutos[lista->compras[i][j]] << endl;
+        }
+
+        cout << endl;
+    }
 }
