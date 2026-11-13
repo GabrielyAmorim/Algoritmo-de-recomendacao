@@ -15,9 +15,14 @@ void calculaInterseccao(int** matrizInterseccao, const ListaCompras *lista){
 
     for (int i = 0; i < n_clientes; i++){
         matrizInterseccao[i] = (int*)malloc(n_clientes * sizeof(int));
+
         if (matrizInterseccao == NULL){
             printf("Erro ao alocar memoria.");
             return;
+        }
+
+        for (int j = 0; j < n_clientes; j++){
+            matrizInterseccao[i][j] = 0;
         }
     }
 
@@ -36,7 +41,7 @@ void calculaInterseccao(int** matrizInterseccao, const ListaCompras *lista){
     }
 }
 
-double calculaJaccard(int interseccao, int produtos_cliente){
+double calculaJaccard(double interseccao, double produtos_cliente){
     double similaridade = 1 - (interseccao/produtos_cliente);
     return similaridade;
 }
@@ -70,7 +75,11 @@ void encontraSimilares(Similaridade * simi, const ListaCompras * lista,int clien
 
     for(int i = 0; i < numClientes; i++){
 
-        if(simi->matrizSimilaridade[cliente][i] <numMaisSimi){
+        if(i == cliente){
+            continue;
+        }
+        
+        if(simi->matrizSimilaridade[cliente][i] > numMaisSimi){
             numMaisSimi = simi->matrizSimilaridade[cliente][i];
             maisSimilar = i;
         }
