@@ -8,7 +8,7 @@ typedef struct{
 } Similaridade;
 
 void calculaInterseccao(int**, const ListaCompras *);
-double calculaJaccard(int*, int*);
+double calculaJaccard(int, int);
 void calculaSimilaridade(Similaridade*, const ListaCompras*);
 void encontraSimilares(Similaridade *, const ListaCompras *, int);
 

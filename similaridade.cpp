@@ -1,5 +1,6 @@
 #include "similaridade.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 void calculaInterseccao(int** matrizInterseccao, const ListaCompras *lista){
     int n_clientes = lista->codigoClientes.size();
@@ -35,7 +36,7 @@ void calculaInterseccao(int** matrizInterseccao, const ListaCompras *lista){
     }
 }
 
-double calcularJaccard(int interseccao, int produtos_cliente){
+double calculaJaccard(int interseccao, int produtos_cliente){
     double similaridade = 1 - (interseccao/produtos_cliente);
     return similaridade;
 }
@@ -57,7 +58,7 @@ void calculaSimilaridade(Similaridade *sim, const ListaCompras *lista){
 
     for (int i = 0; i < n_clientes; i++){
         for (int j = 0; j < n_clientes; j++){
-            sim->matrizSimilaridade[i][j] = calcularJaccard(sim->matrizInterseccao[i][j], lista->compras[i].size()); 
+            sim->matrizSimilaridade[i][j] = calculaJaccard(sim->matrizInterseccao[i][j], lista->compras[i].size()); 
         }
     }
 }
