@@ -10,4 +10,6 @@ typedef struct{
 void calculaInterseccao(int**, const ListaCompras *);
 double calculaJaccard(int*, int*);
 void calculaSimilaridade(Similaridade*, const ListaCompras*);
+void encontraSimilares(Similaridade *, const ListaCompras *, int);
+
 #endif

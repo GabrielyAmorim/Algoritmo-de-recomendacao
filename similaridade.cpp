@@ -37,17 +37,15 @@ void calculaInterseccao(int** matrizInterseccao, const ListaCompras *lista){
 
 double calcularJaccard(int interseccao, int produtos_cliente){
     double similaridade = 1 - (interseccao/produtos_cliente);
-    
     return similaridade;
 }
 
-void calculaSimilartidade(Similaridade *sim, const ListaCompras *lista){
+void calculaSimilaridade(Similaridade *sim, const ListaCompras *lista){
     int n_clientes = lista->codigoClientes.size();
 
     sim->matrizSimilaridade = (double**)malloc(n_clientes * sizeof(double*));
     if (sim->matrizSimilaridade == NULL){
         printf("Erro ao alocar memoria.");
-        return;
     }
 
     for (int i = 0; i < n_clientes; i++){
@@ -62,5 +60,21 @@ void calculaSimilartidade(Similaridade *sim, const ListaCompras *lista){
             sim->matrizSimilaridade[i][j] = calcularJaccard(sim->matrizInterseccao[i][j], lista->compras[i].size()); 
         }
     }
+}
 
+void encontraSimilares(Similaridade * simi, const ListaCompras * lista,int cliente){
+    double numMaisSimi = simi->matrizSimilaridade[0][1];
+    int maisSimilar = 0;
+    int numClientes = lista->codigoClientes.size();
+
+    for(int i = 0; i < numClientes; i++){
+
+        if(simi->matrizSimilaridade[cliente][i] <numMaisSimi){
+            numMaisSimi = simi->matrizSimilaridade[cliente][i];
+            maisSimilar = i;
+        }
+        
+    }
+
+    printf("Vizinho mais similar: %d \n", maisSimilar);
 }

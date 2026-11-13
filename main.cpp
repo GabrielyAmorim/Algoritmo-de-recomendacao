@@ -16,6 +16,14 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    criaMatrizCompras(&lista);
+
+    Similaridade simi;
+
+    calculaInterseccao(simi.matrizInterseccao, &lista);
+    calculaSimilaridade(&simi, &lista);
+    int cliente;
+
     int opcao;
 
     printf("Escolha o modulo de interesse:\n");
@@ -32,7 +40,11 @@ int main(int argc, char *argv[]) {
             break;
 
         case 2:
-            // NO PROCESSO
+
+            printf("Digite o cliente desejado: ");
+            scanf("%d", &cliente);
+
+            encontraSimilares(&simi, &lista, cliente);
             break;
 
         case 3:
@@ -42,6 +54,15 @@ int main(int argc, char *argv[]) {
         default:
             printf("Opcao invalida.\n");
     }
+
+    for(int i = 0; i < lista.codigoClientes.size(); i++){
+        free(simi.matrizInterseccao[i]);
+        free(simi.matrizSimilaridade[i]);
+        free(lista.matrizCompras[i]);
+    }
+    free(simi.matrizInterseccao);
+    free(simi.matrizSimilaridade);
+    free(lista.matrizCompras);
 
     return 0;
 }
