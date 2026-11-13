@@ -2,6 +2,7 @@
 #include "similaridade.h"
 #include "recomendacao.h"
 #include <stdio.h>
+#include "stdlib.h"
 
 int main(int argc, char *argv[]) {
 
@@ -22,8 +23,8 @@ int main(int argc, char *argv[]) {
 
     calculaInterseccao(&simi, &lista);
     calculaSimilaridade(&simi, &lista);
-    int cliente;
 
+    int cliente;
     int opcao;
 
     printf("Escolha o modulo de interesse:\n");
@@ -36,6 +37,7 @@ int main(int argc, char *argv[]) {
     switch(opcao){
 
         case 1:
+
             exibeLista(&lista);
             break;
 
@@ -43,12 +45,17 @@ int main(int argc, char *argv[]) {
 
             printf("Digite o cliente desejado: ");
             scanf("%d", &cliente);
-
             encontraSimilares(&simi, &lista, cliente);
             break;
 
         case 3:
-            // FALTA
+
+            printf("Digite o cliente desejado: ");
+            scanf("%d", &cliente);
+            int k;
+            printf("Digite quantas recomendacoes voce deseja: ");
+            scanf("%d", &k);
+            recomendarProduto(&lista, &simi, cliente, k);
             break;
 
         default:
