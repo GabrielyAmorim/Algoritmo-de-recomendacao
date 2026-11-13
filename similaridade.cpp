@@ -2,27 +2,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void calculaInterseccao(int** matrizInterseccao, const ListaCompras *lista){
+void calculaInterseccao(Similaridade *sim, const ListaCompras *lista){
     int n_clientes = lista->codigoClientes.size();
     int n_produtos = lista->codigoProdutos.size();
     int matrizTransposta[n_produtos][n_clientes];
 
-    matrizInterseccao = (int**)malloc(n_clientes * sizeof(int*));
-    if (matrizInterseccao == NULL){
+    sim->matrizInterseccao = (int**)malloc(n_clientes * sizeof(int*));
+    if (sim->matrizInterseccao == NULL){
         printf("Erro ao alocar memoria.");
         return;
     }
 
     for (int i = 0; i < n_clientes; i++){
-        matrizInterseccao[i] = (int*)malloc(n_clientes * sizeof(int));
+        sim->matrizInterseccao[i] = (int*)malloc(n_clientes * sizeof(int));
 
-        if (matrizInterseccao == NULL){
+        if (sim->matrizInterseccao[i] == NULL){
             printf("Erro ao alocar memoria.");
             return;
         }
 
         for (int j = 0; j < n_clientes; j++){
-            matrizInterseccao[i][j] = 0;
+            sim->matrizInterseccao[i][j] = 0;
         }
     }
 
@@ -35,7 +35,7 @@ void calculaInterseccao(int** matrizInterseccao, const ListaCompras *lista){
     for (int i = 0; i < n_clientes; i++){
         for (int j = 0; j < n_clientes; j++){
             for (int k = 0; k < n_produtos; k++) {
-                matrizInterseccao[i][j] += lista->matrizCompras[i][k] * matrizTransposta[k][j];
+                sim->matrizInterseccao[i][j] += lista->matrizCompras[i][k] * matrizTransposta[k][j];
             }
         }
     }
@@ -68,23 +68,31 @@ void calculaSimilaridade(Similaridade *sim, const ListaCompras *lista){
     }
 }
 
-void encontraSimilares(Similaridade * simi, const ListaCompras * lista,int cliente){
-    double numMaisSimi = simi->matrizSimilaridade[0][1];
-    int maisSimilar = 0;
+void encontraSimilares(Similaridade * simi, const ListaCompras * lista, int cliente){
     int numClientes = lista->codigoClientes.size();
-
+ 
+    if(cliente < 0 || cliente >= numClientes){
+        printf("Cliente invalido.\n");
+        return;
+    }
+ 
+    double menorValor = 1.0;
+    int maisSimilar = -1;
+ 
     for(int i = 0; i < numClientes; i++){
-
         if(i == cliente){
             continue;
         }
-        
-        if(simi->matrizSimilaridade[cliente][i] > numMaisSimi){
-            numMaisSimi = simi->matrizSimilaridade[cliente][i];
+
+        if(simi->matrizSimilaridade[cliente][i] < menorValor){
+            menorValor = simi->matrizSimilaridade[cliente][i];
             maisSimilar = i;
         }
-        
     }
-
-    printf("Vizinho mais similar: %d \n", maisSimilar);
+ 
+    if(maisSimilar == -1){
+        printf("Nenhum cliente similar encontrado.\n");
+    } else {
+        printf("Vizinho mais similar: %d (s = %.3f)\n", maisSimilar, menorValor);
+    }
 }

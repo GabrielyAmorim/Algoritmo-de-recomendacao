@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
 
     Similaridade simi;
 
-    calculaInterseccao(simi.matrizInterseccao, &lista);
+    calculaInterseccao(&simi, &lista);
     calculaSimilaridade(&simi, &lista);
     int cliente;
 
