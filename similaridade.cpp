@@ -9,7 +9,7 @@ void calculaInterseccao(Similaridade *simi, const ListaCompras *lista){
 
     simi->matrizInterseccao = (int**)malloc(n_clientes * sizeof(int*));
     if (simi->matrizInterseccao == NULL){
-        printf("Erro ao alocar memoria.");
+        printf("Erro ao alocar memoria. 2");
         return;
     }
 
@@ -17,7 +17,7 @@ void calculaInterseccao(Similaridade *simi, const ListaCompras *lista){
         simi->matrizInterseccao[i] = (int*)malloc(n_clientes * sizeof(int));
 
         if (simi->matrizInterseccao[i] == NULL){
-            printf("Erro ao alocar memoria.");
+            printf("Erro ao alocar memoria. 2.1");
             return;
         }
 
@@ -51,13 +51,15 @@ void calculaSimilaridade(Similaridade *simi, const ListaCompras *lista){
 
     simi->matrizSimilaridade = (double**)malloc(n_clientes * sizeof(double*));
     if (simi->matrizSimilaridade == NULL){
-        printf("Erro ao alocar memoria.");
+        printf("Erro ao alocar memoria. 3");
+        return;
     }
 
     for (int i = 0; i < n_clientes; i++){
         simi->matrizSimilaridade[i] = (double*)malloc(n_clientes * sizeof(double));
         if (simi->matrizSimilaridade[i] == NULL){
-            printf("Erro ao alocar memoria.");
+            printf("Erro ao alocar memoria. 3.1");
+            return;
         }
     }
 
