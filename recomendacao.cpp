@@ -43,12 +43,12 @@ bool ordenaPorScore(const Item &a, const Item &b){
 void recomendarProduto(const ListaCompras *lista, const Similaridade *simi, int cliente, int k){
 
     if(k <= 0){
-        cout << "k invalido." << endl;
+        printf("K invalido.");
         return;
     }
 
     int numClientes = lista->codigoClientes.size();
-    int numProdutos = lista->codigoProdutos.size();
+    int numProdutos = lista->nomeProdutos.size();
 
     if(cliente < 0 || cliente >= numClientes){
         printf("Cliente invalido.\n");
@@ -89,7 +89,7 @@ void recomendarProduto(const ListaCompras *lista, const Similaridade *simi, int 
             continue;
         }
 
-        cout << lista->codigoProdutos[produto] << endl;
+        cout << lista->nomeProdutos[produto] << endl;
 
         recomendados++;
     }

@@ -10,7 +10,7 @@ using namespace std;
 typedef struct{
     vector<string> codigoClientes;
     map<string, int> mapaClientes;
-    vector<string> codigoProdutos;
+    vector<string> nomeProdutos;
     map<string, int> mapaProdutos;
     vector<vector<int>> compras;
     int** matrizCompras;

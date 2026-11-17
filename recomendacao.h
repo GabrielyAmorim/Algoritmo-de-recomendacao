@@ -11,7 +11,7 @@ typedef struct{
 } Item;
 
 vector<int> criaLista(const Similaridade *, int, int);
-vector<Item> criaRanqueamente(int);
+vector<Item> criaRanqueamento(int);
 bool ordenaPorScore(const Item &, const Item &);
 void recomendarProduto(const ListaCompras*, const Similaridade*, int, int);
 

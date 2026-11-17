@@ -16,12 +16,12 @@ int lerArquivo(ListaCompras *lista, const char *nomeArquivo){
 
     char data[9];
     char cliente[20];
-    char produto[7];
-    char nome[200];
+    char codigo_produto[7];
+    char produto[200];
 
     fscanf(arquivo, "%*[^\n]");
 
-    while(fscanf(arquivo, " %8[^,],%19[^,],%6[^,],%199[^\r\n]", data, cliente, produto, nome) == 4){
+    while(fscanf(arquivo, " %8[^,],%19[^,],%6[^,],%199[^\r\n]", data, cliente, codigo_produto, produto) == 4){
         int indiceCliente;
         int indiceProduto;
 
@@ -39,8 +39,8 @@ int lerArquivo(ListaCompras *lista, const char *nomeArquivo){
             indiceProduto = lista->mapaProdutos[produto];
         } 
         else{
-            indiceProduto = lista->codigoProdutos.size();
-            lista->codigoProdutos.push_back(produto);
+            indiceProduto = lista->nomeProdutos.size();
+            lista->nomeProdutos.push_back(produto);
             lista->mapaProdutos[produto] = indiceProduto;
         }
 
@@ -61,7 +61,7 @@ int lerArquivo(ListaCompras *lista, const char *nomeArquivo){
 
 void criaMatrizCompras(ListaCompras *lista){
     int n_clientes = lista->codigoClientes.size();
-    int n_produtos = lista->codigoProdutos.size();
+    int n_produtos = lista->nomeProdutos.size();
 
     lista->matrizCompras = (int**)malloc(n_clientes * sizeof(int*));
     if (lista->matrizCompras == NULL){
@@ -96,7 +96,7 @@ void exibeLista(const ListaCompras * lista){
         cout << "Itens:" << endl;
 
         for(int j = 0; j < lista->compras[i].size(); j++){
-            cout << " " << lista->codigoProdutos[lista->compras[i][j]] << endl;
+            cout << " " << lista->nomeProdutos[lista->compras[i][j]] << endl;
         }
 
         cout << endl;
