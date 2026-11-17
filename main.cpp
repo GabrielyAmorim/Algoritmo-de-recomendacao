@@ -4,10 +4,24 @@
 #include <stdio.h>
 #include "stdlib.h"
 
+void mostraUso(const char *programa){
+    printf("Uso:\n");
+    printf("  %s <arquivo.csv> 1                    -> lista de compras\n", programa);
+    printf("  %s <arquivo.csv> 2 <cliente>          -> cliente mais similar\n", programa);
+    printf("  %s <arquivo.csv> 3 <cliente> <k>      -> k recomendacoes\n", programa);
+}
+
 int main(int argc, char *argv[]) {
 
-    if(argc != 2){
-        printf("Uso: %s <arquivo.csv>\n", argv[0]);
+    if(argc < 3){
+        mostraUso(argv[0]);
+        return 1;
+    }
+
+    int opcao = atoi(argv[2]);
+
+    if((opcao == 2 && argc != 4) || (opcao == 3 && argc != 5)){
+        mostraUso(argv[0]);
         return 1;
     }
 
@@ -24,42 +38,23 @@ int main(int argc, char *argv[]) {
     calculaInterseccao(&simi, &lista);
     calculaSimilaridade(&simi, &lista);
 
-    int cliente;
-    int opcao;
-
-    printf("Escolha o modulo de interesse:\n");
-    printf("1 - Lista de Compras\n");
-    printf("2 - Similaridade\n");
-    printf("3 - Recomendacao\n");
-    printf("Opcao: ");
-    scanf("%d", &opcao);
-
     switch(opcao){
 
         case 1:
-
             exibeLista(&lista);
             break;
 
         case 2:
-
-            printf("Digite o cliente desejado: ");
-            scanf("%d", &cliente);
-            encontraSimilares(&simi, &lista, cliente);
+            encontraSimilares(&simi, &lista, atoi(argv[3]));
             break;
 
         case 3:
-
-            printf("Digite o cliente desejado: ");
-            scanf("%d", &cliente);
-            int k;
-            printf("Digite quantas recomendacoes voce deseja: ");
-            scanf("%d", &k);
-            recomendarProduto(&lista, &simi, cliente, k);
+            recomendarProduto(&lista, &simi, atoi(argv[3]), atoi(argv[4]));
             break;
 
         default:
             printf("Opcao invalida.\n");
+            mostraUso(argv[0]);
     }
 
     for(int i = 0; i < lista.codigoClientes.size(); i++){
