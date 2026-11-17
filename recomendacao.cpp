@@ -42,13 +42,13 @@ bool ordenaPorScore(const Item &a, const Item &b){
 
 void recomendarProduto(const ListaCompras *lista, const Similaridade *simi, int cliente, int k){
 
+    int numClientes = lista->codigoClientes.size();
+    int numProdutos = lista->nomeProdutos.size();
+    
     if(k <= 0){
         printf("K invalido.");
         return;
     }
-
-    int numClientes = lista->codigoClientes.size();
-    int numProdutos = lista->nomeProdutos.size();
 
     if(cliente < 0 || cliente >= numClientes){
         printf("Cliente invalido.\n");
@@ -74,9 +74,8 @@ void recomendarProduto(const ListaCompras *lista, const Similaridade *simi, int 
 
     sort(R.begin(), R.end(), ordenaPorScore);
 
-    int recomendados = 0;
-
-    for(int i = 0; i < numProdutos && recomendados < k; i++){
+    int i;
+    for(i = 0; i < numProdutos && i < k; i++){
         int produto = R[i].produto;
 
         if(R[i].score == 1.0){
@@ -89,10 +88,9 @@ void recomendarProduto(const ListaCompras *lista, const Similaridade *simi, int 
 
         cout << lista->nomeProdutos[produto] << endl;
 
-        recomendados++;
     }
 
-    if(recomendados == 0){
+    if(i == 0){
         cout << "Nenhuma recomendacao disponivel" << endl;
     }  
 }
