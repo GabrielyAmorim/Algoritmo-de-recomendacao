@@ -60,17 +60,15 @@ void recomendarProduto(const ListaCompras *lista, const Similaridade *simi, int 
     vector<Item> R = criaRanqueamento(numProdutos);
 
     for(int i = 0; i < vizinhos.size(); i++){
-        int vizinho = vizinhos[i];
-        double sim = simi->matrizSimilaridade[cliente][vizinho];
 
-        for(int j = 0; j < lista->compras[vizinho].size(); j++){
-            int produto = lista->compras[vizinho][j];
+        for(int j = 0; j < lista->compras[vizinhos[i]].size(); j++){
+            int produto = lista->compras[vizinhos[i]][j];
 
             if(find(lista->compras[cliente].begin(), lista->compras[cliente].end(), produto) != lista->compras[cliente].end()){
                 continue;
             }    
 
-            R[produto].score *= sim;
+            R[produto].score *= simi->matrizSimilaridade[cliente][vizinhos[i]];
         }
     }
 
