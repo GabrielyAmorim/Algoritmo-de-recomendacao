@@ -7,7 +7,8 @@ typedef struct{
     double** matrizSimilaridade;
 } Similaridade;
 
-void calculaInterseccao(Similaridade *, const ListaCompras *);
+void calculaInterseccaoLenta(Similaridade *, const ListaCompras *);
+void calculaInterseccaoMedia(Similaridade *, const ListaCompras *);
 double calculaJaccard(double, double);
 void calculaSimilaridade(Similaridade*, const ListaCompras*);
 void encontraSimilares(Similaridade *, const ListaCompras *, int);

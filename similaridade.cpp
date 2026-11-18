@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void calculaInterseccao(Similaridade *simi, const ListaCompras *lista){
+void calculaInterseccaoLenta(Similaridade *simi, const ListaCompras *lista){
     int n_clientes = lista->codigoClientes.size();
     int n_produtos = lista->nomeProdutos.size();
     int matrizTransposta[n_produtos][n_clientes];
@@ -40,6 +40,43 @@ void calculaInterseccao(Similaridade *simi, const ListaCompras *lista){
         }
     }
 }
+
+void calculaInterseccaoMedia(Similaridade *simi, const ListaCompras *lista){
+    int n_clientes = lista->codigoClientes.size();
+    int n_produtos = lista->nomeProdutos.size();
+
+    simi->matrizInterseccao = (int**)malloc(n_clientes * sizeof(int*));
+    
+    if (simi->matrizInterseccao == NULL){
+        printf("Erro ao alocar memoria. 2");
+        return;
+    }
+
+    for (int i = 0; i < n_clientes; i++){
+        simi->matrizInterseccao[i] = (int*)malloc(n_clientes * sizeof(int));
+
+        if (simi->matrizInterseccao[i] == NULL){
+            printf("Erro ao alocar memoria. 2.1");
+            return;
+        }
+
+        for (int j = 0; j < n_clientes; j++){
+            simi->matrizInterseccao[i][j] = 0;
+        }
+    }
+
+    for(int i = 0; i < n_clientes; i++){
+        for(int j = i; j < n_clientes; j++){
+            int soma = 0;
+
+            for(int k = 0; k < n_produtos; k++){
+                soma += lista->matrizCompras[i][k] * lista->matrizCompras[j][k]; 
+            }
+            simi->matrizInterseccao[i][j] = soma;
+            simi->matrizInterseccao[j][i] = soma;
+        }
+    }
+}            
 
 double calculaJaccard(double interseccao, double produtos_cliente){
     double similaridade = 1 - (interseccao/produtos_cliente);

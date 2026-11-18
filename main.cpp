@@ -2,6 +2,7 @@
 #include "similaridade.h"
 #include "recomendacao.h"
 #include <stdio.h>
+#include <ctime>
 #include "stdlib.h"
 
 void mostraUso(const char *programa){
@@ -33,10 +34,26 @@ int main(int argc, char *argv[]) {
 
     criaMatrizCompras(&lista);
 
+    clock_t inicio = clock();
+
     Similaridade simi;
 
-    calculaInterseccao(&simi, &lista);
+    int opcaoIntersec;
+    if(opcaoIntersec == 1){
+        calculaInterseccaoLenta(&simi, &lista);
+    }
+    else if(opcaoIntersec == 2){
+        calculaInterseccaoMedia(&simi, &lista);
+    }
+    //else{
+        //calculaIntersecHiperMegaRapido;
+    //}
+    
     calculaSimilaridade(&simi, &lista);
+
+    
+    clock_t fim = clock();
+    double tempo = double(fim - inicio) / CLOCKS_PER_SEC;
 
     switch(opcao){
 
