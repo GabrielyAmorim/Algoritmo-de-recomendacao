@@ -41,7 +41,7 @@ void calculaInterseccaoLenta(Similaridade *simi, const ListaCompras *lista){
     }
 }
 
-void calculaInterseccaoMedia(Similaridade *simi, const ListaCompras *lista){
+void calculaInterseccaoRapida(Similaridade *simi, const ListaCompras *lista){
     int n_clientes = lista->codigoClientes.size();
     int n_produtos = lista->nomeProdutos.size();
 

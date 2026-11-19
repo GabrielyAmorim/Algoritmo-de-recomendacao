@@ -7,21 +7,21 @@
 
 void mostraUso(const char *programa){
     printf("Uso:\n");
-    printf("  %s <arquivo.csv> 1                    -> lista de compras\n", programa);
-    printf("  %s <arquivo.csv> 2 <cliente>          -> cliente mais similar\n", programa);
-    printf("  %s <arquivo.csv> 3 <cliente> <k>      -> k recomendacoes\n", programa);
+    printf("  %s <arquivo.csv> <modo> 1                    -> lista de compras\n", programa);
+    printf("  %s <arquivo.csv> <modo> 2 <cliente>          -> cliente mais similar\n", programa);
+    printf("  %s <arquivo.csv> <modo> 3 <cliente> <k>      -> k recomendacoes\n", programa);
 }
 
 int main(int argc, char *argv[]) {
 
-    if(argc < 3){
+    if(argc < 4){
         mostraUso(argv[0]);
         return 1;
     }
 
-    int opcao = atoi(argv[2]);
+    int opcao = atoi(argv[3]);
 
-    if((opcao == 2 && argc != 4) || (opcao == 3 && argc != 5)){
+    if((opcao == 2 && argc != 5) || (opcao == 3 && argc != 6)){
         mostraUso(argv[0]);
         return 1;
     }
@@ -38,12 +38,14 @@ int main(int argc, char *argv[]) {
 
     Similaridade simi;
 
-    int opcaoIntersec;
-    if(opcaoIntersec == 1){
+    if(atoi(argv[2]) == 1){
         calculaInterseccaoLenta(&simi, &lista);
     }
-    else if(opcaoIntersec == 2){
-        calculaInterseccaoMedia(&simi, &lista);
+    else if(atoi(argv[2]) == 2){
+        calculaInterseccaoRapida(&simi, &lista);
+    } else {
+        mostraUso(argv[0]);
+        return 1;
     }
     //else{
         //calculaIntersecHiperMegaRapido;
@@ -62,11 +64,11 @@ int main(int argc, char *argv[]) {
             break;
 
         case 2:
-            encontraSimilares(&simi, &lista, atoi(argv[3]));
+            encontraSimilares(&simi, &lista, atoi(argv[4]));
             break;
 
         case 3:
-            recomendarProduto(&lista, &simi, atoi(argv[3]), atoi(argv[4]));
+            recomendarProduto(&lista, &simi, atoi(argv[4]), atoi(argv[5]));
             break;
 
         default:
@@ -82,6 +84,8 @@ int main(int argc, char *argv[]) {
     free(simi.matrizInterseccao);
     free(simi.matrizSimilaridade);
     free(lista.matrizCompras);
+
+    printf("%f", tempo);
 
     return 0;
 }
