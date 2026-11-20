@@ -6,16 +6,16 @@
 
 using namespace std;
 
-vector<int> criaLista(const Similaridade *simi, int numClientes, int cliente){
+vector<int> criaLista(double** matrizSimilaridade, int n_clientes, int cliente){
     vector<int> vizinhos;
 
-    for(int i = 0; i < numClientes; i ++){
+    for(int i = 0; i < n_clientes; i ++){
         
         if(i == cliente){
             continue;
         }
 
-        double nivelSimilar = simi->matrizSimilaridade[cliente][i];
+        double nivelSimilar = matrizSimilaridade[cliente][i];
 
         if(nivelSimilar < 1.0 && nivelSimilar > 0.0){
             vizinhos.push_back(i);
@@ -25,10 +25,10 @@ vector<int> criaLista(const Similaridade *simi, int numClientes, int cliente){
     return vizinhos;
 }
 
-vector<Item> criaRanqueamento(int numProdutos){
-    vector<Item> R(numProdutos);
+vector<Item> criaRanqueamento(int n_produtos){
+    vector<Item> R(n_produtos);
 
-    for(int i = 0; i < numProdutos; i++){
+    for(int i = 0; i < n_produtos; i++){
         R[i].produto = i;
         R[i].score   = 1.0;
     }
@@ -40,57 +40,54 @@ bool ordenaPorScore(const Item &a, const Item &b){
     return a.score < b.score;
 }
 
-void recomendarProduto(const ListaCompras *lista, const Similaridade *simi, int cliente, int k){
+void recomendarProduto(const vector<string>& nomeProdutos, const vector<list<int>>& compras, double** matrizSimilaridade,
+    int n_clientes, int n_produtos, int cliente, int k){
 
-    int numClientes = lista->codigoClientes.size();
-    int numProdutos = lista->nomeProdutos.size();
-    
     if(k <= 0){
         printf("K invalido.");
         return;
     }
 
-    if(cliente < 0 || cliente >= numClientes){
+    if(cliente < 0 || cliente >= n_clientes){
         printf("Cliente invalido.\n");
         return;
     }
 
-    vector<int> vizinhos = criaLista(simi, numClientes, cliente);
+    vector<int> vizinhos = criaLista(matrizSimilaridade, n_clientes, cliente);
 
-    vector<Item> R = criaRanqueamento(numProdutos);
+    vector<Item> R = criaRanqueamento(n_produtos);
 
     for(int i = 0; i < vizinhos.size(); i++){
 
-        for(int j = 0; j < lista->compras[vizinhos[i]].size(); j++){
-            int produto = lista->compras[vizinhos[i]][j];
-
-            if(find(lista->compras[cliente].begin(), lista->compras[cliente].end(), produto) != lista->compras[cliente].end()){
+        for(int j : compras[vizinhos[i]]){
+            
+            if(find(compras[cliente].begin(), compras[cliente].end(), j) != compras[cliente].end()){
                 continue;
             }    
 
-            R[produto].score *= simi->matrizSimilaridade[cliente][vizinhos[i]];
+            R[j].score *= matrizSimilaridade[cliente][vizinhos[i]];
         }
     }
 
     sort(R.begin(), R.end(), ordenaPorScore);
 
-    int i;
-    for(i = 0; i < numProdutos && i < k; i++){
+    int recomendacoes;
+    for(int i = 0; i < n_produtos && recomendacoes < k; i++){
         int produto = R[i].produto;
 
         if(R[i].score == 1.0){
             continue;
         }
 
-        if(find(lista->compras[cliente].begin(), lista->compras[cliente].end(), produto) != lista->compras[cliente].end()){
+        if(find(compras[cliente].begin(), compras[cliente].end(), produto) != compras[cliente].end()){
             continue;
         }
 
-        cout << lista->nomeProdutos[produto] << endl;
-
+        cout << nomeProdutos[produto] << endl;
+        recomendacoes++;
     }
 
-    if(i == 0){
+    if(recomendacoes == 0){
         cout << "Nenhuma recomendacao disponivel" << endl;
     }  
 }

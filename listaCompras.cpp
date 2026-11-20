@@ -32,7 +32,7 @@ int lerArquivo(ListaCompras *lista, const char *nomeArquivo){
             indiceCliente = lista->codigoClientes.size();
             lista->codigoClientes.push_back(cliente);
             lista->mapaClientes[cliente] = indiceCliente;
-            lista->compras.push_back(vector<int>());
+            lista->compras.push_back(list<int>());
         }
 
         if(lista->mapaProdutos.find(produto) != lista->mapaProdutos.end()){
@@ -44,59 +44,79 @@ int lerArquivo(ListaCompras *lista, const char *nomeArquivo){
             lista->mapaProdutos[produto] = indiceProduto;
         }
 
-        int i;
-        for(i = 0; i < lista->compras[indiceCliente].size(); i++){
-            if(lista->compras[indiceCliente][i] == indiceProduto){
+        int jaTem = 0;
+        for(int k : lista->compras[indiceCliente]){
+            if(k == indiceProduto){
+                jaTem = 1;
                 break;
-            }
+            }    
         }
-        if(i == lista->compras[indiceCliente].size()){
+
+        if(jaTem == 0){
             lista->compras[indiceCliente].push_back(indiceProduto);
         }
-    }
+    }    
  
     fclose(arquivo);
     return 0;
 }
 
-void criaMatrizCompras(ListaCompras *lista){
-    int n_clientes = lista->codigoClientes.size();
-    int n_produtos = lista->nomeProdutos.size();
+void criaMatrizCompras(const vector<list<int>>& compras, int n_clientes, int n_produtos, int*** matrizCompras){
 
-    lista->matrizCompras = (int**)malloc(n_clientes * sizeof(int*));
-    if (lista->matrizCompras == NULL){
+    *matrizCompras = (int**)malloc(n_clientes * sizeof(int*));
+    if (*matrizCompras == NULL){
         printf("Erro ao alocar memoria. 1");
         return;
     }
 
     for(int i = 0; i < n_clientes; i++){
-        lista->matrizCompras[i] = (int*)malloc(n_produtos * sizeof(int));
-        if (lista->matrizCompras[i] == NULL){
+        (*matrizCompras)[i] = (int*)malloc(n_produtos * sizeof(int));
+        if ((*matrizCompras)[i] == NULL){
         printf("Erro ao alocar memoria. 1.1");
         return;
     }
 
         for (int j = 0; j < n_produtos; j++){
-            lista->matrizCompras[i][j] = 0;
+            (*matrizCompras)[i][j] = 0;
         }
     }
 
     for(int i = 0; i < n_clientes; i++){
-        for (int j = 0; j < lista->compras[i].size(); j++){
-            lista->matrizCompras[i][lista->compras[i][j]] = 1;
+        for (int j : compras[i]){
+            (*matrizCompras)[i][j] = 1;
         }
-
     }
 }
 
-void exibeLista(const ListaCompras * lista){
+void criaCSRMatrizCompras(const vector<list<int>>& compras, int n_colunas, vector<double>& values,
+    vector<int>& col_index, vector<int>& row_ptr){ 
 
-   for(int i = 0; i < lista->codigoClientes.size(); i++){
-        cout << "Cliente: " << lista->codigoClientes[i] << endl;
+    int count = 0;
+
+    row_ptr.push_back(0);
+
+    for(int i = 0; i < compras.size(); i ++){
+
+        for(int j : compras[i]){
+
+            values.push_back(1);
+            col_index.push_back(j);
+
+            count++;
+        }
+
+        row_ptr.push_back(count);
+    }
+}            
+
+void exibeLista(const vector<string>& codigoClientes, const vector<list<int>>& compras, const vector<string>& nomeProdutos){
+
+   for(int i = 0; i < codigoClientes.size(); i++){
+        cout << "Cliente: " << codigoClientes[i] << endl;
         cout << "Itens:" << endl;
 
-        for(int j = 0; j < lista->compras[i].size(); j++){
-            cout << " " << lista->nomeProdutos[lista->compras[i][j]] << endl;
+        for(int j : compras[i]){
+            cout << " " << nomeProdutos[j] << endl;
         }
 
         cout << endl;

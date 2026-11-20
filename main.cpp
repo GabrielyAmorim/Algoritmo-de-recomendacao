@@ -32,18 +32,22 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    criaMatrizCompras(&lista);
+    int n_clientes = lista.codigoClientes.size();
+    int n_produtos = lista.nomeProdutos.size();
+
+    criaMatrizCompras(lista.compras, n_clientes, n_produtos, &lista.matrizCompras);
 
     clock_t inicio = clock();
 
     Similaridade simi;
 
     if(atoi(argv[2]) == 1){
-        calculaInterseccaoLenta(&simi, &lista);
+        calculaInterseccaoLenta(&simi.matrizInterseccao, lista.matrizCompras, n_clientes, n_produtos);
     }
     else if(atoi(argv[2]) == 2){
-        calculaInterseccaoRapida(&simi, &lista);
-    } else {
+        calculaInterseccaoRapida(&simi.matrizInterseccao, lista.matrizCompras, n_clientes, n_produtos);
+    } 
+    else{
         mostraUso(argv[0]);
         return 1;
     }
@@ -51,7 +55,7 @@ int main(int argc, char *argv[]) {
         //calculaIntersecHiperMegaRapido;
     //}
     
-    calculaSimilaridade(&simi, &lista);
+    calculaSimilaridade(&simi.matrizSimilaridade, simi.matrizInterseccao, lista.compras, n_clientes);
 
     
     clock_t fim = clock();
@@ -60,15 +64,16 @@ int main(int argc, char *argv[]) {
     switch(opcao){
 
         case 1:
-            exibeLista(&lista);
+            exibeLista(lista.codigoClientes, lista.compras, lista.nomeProdutos);
             break;
 
         case 2:
-            encontraSimilares(&simi, &lista, atoi(argv[4]));
+            encontraSimilares(simi.matrizSimilaridade, n_clientes, atoi(argv[4]));
             break;
 
         case 3:
-            recomendarProduto(&lista, &simi, atoi(argv[4]), atoi(argv[5]));
+            recomendarProduto(lista.nomeProdutos, lista.compras, simi.matrizSimilaridade, n_clientes, 
+                n_produtos, atoi(argv[4]), atoi(argv[5]));
             break;
 
         default:
