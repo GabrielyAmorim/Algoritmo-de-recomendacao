@@ -75,6 +75,7 @@ void calculaInterseccaoRapida(int*** matrizInterseccao, int** matrizCompras, int
     }
 }
 
+//T = transposta
 void calculaInterseccaoCSR(vector<double>& compras_values,
                            vector<int>& compras_index,
                            vector<int>& compras_row_ptr,
@@ -83,42 +84,41 @@ void calculaInterseccaoCSR(vector<double>& compras_values,
                            vector<int>& interseccao_row_ptr
                            ){
     
+    interseccao_row_ptr.push_back(0);
     int cont = 0;
 
-    for (int i = 0; i < compras_row_ptr.size() - 1; i++){
-        int n_elementos = compras_row_ptr[i] - compras_row_ptr[i + 1];
-        int soma = 0;
-        int column;
-        interseccao_row_ptr.push_back(0);
+    int n_linhas = compras_row_ptr.size() - 1;
+    for (int i = 0; i < n_linhas - 1; i++){
+        for (int iT = 0; iT < n_linhas; iT++){
+            int a = compras_row_ptr[i];
+            int fimA = compras_row_ptr[i + 1];
+            int aT = compras_row_ptr[iT];
+            int fimAT = compras_row_ptr[iT + 1];
+            double soma = 0;
 
-        int contT;
-        for (int iT = 0; iT < compras_row_ptr.size() - 1; iT++){
-            int n_elementosT = compras_row_ptr[iT] - compras_row_ptr[iT - 1];
 
-            for (int j = 0; j < n_elementos; j++){
-                for (int jT = 0; jT < n_elementosT; jT++){
-                    if (compras_index[cont] == compras_index[contT]){
+            while (a < fimA && aT < fimAT){
+                if (compras_index[a] == compras_index[aT]){
 
-                        if ((compras_values[cont] * compras_values[contT]) != 0){
-                            soma += compras_values[cont] * compras_values[contT];
-                        }
-                        contT++
-                    }
-                }
-                if (soma != 0){
-                    interseccao_values.push_back(soma);
-                    interseccao_index.push_back(compras_index[cont]);
-                cont++;
+                    soma += compras_values[a] * compras_values[aT];
+                    a++;
+                    aT++;
+                } else if (compras_index[a]  < compras_index[aT]){
+                        a++;
+                } else if (compras_index[a] > compras_index[aT]){
+                        aT++;
                 }
             }
-        }
 
-        if (soma != 0){
-
-            interseccao_row_ptr.push_back(cont);
+            if (soma > 0){
+                    interseccao_values.push_back(soma);
+                    interseccao_index.push_back(iT);
+            }
         }
+        interseccao_row_ptr.push_back(cont);
     }
 }
+
 
 double calculaJaccard(double interseccao, double produtos_cliente){
     double similaridade = 1 - (interseccao/produtos_cliente);
@@ -148,6 +148,7 @@ void calculaSimilaridade(double*** matrizSimilaridade, int** matrizInterseccao, 
     }
 }
 
+//S = similaridade
 void calculaSimilaridadeCSR(vector<double>& interseccao_values,
                             vector<int>& interseccao_index,
                             vector<int>& interseccao_row_ptr,
@@ -156,18 +157,13 @@ void calculaSimilaridadeCSR(vector<double>& interseccao_values,
                             vector<int>& similaridade_row_ptr,
                             vector<int>& compras_row_ptr
                             ){
-    
-    int cont = 0;
-    for (int i = 0; i < interseccao_values.size() - 1; i++){
-        int n_elementos = interseccao_row_ptr[i] - interseccao_row_ptr[i + 1];
-        int n_elementos_compras = compras_row_ptr[i] - compras_row_ptr[i + 1];
 
-        for (int j = 0; j < n_elementos; j++){
+    int n_linhas = interseccao_row_ptr.size() - 1;
+    for (int i; i < n_linhas; i++){
 
-            int similaridade = calculaJaccard(interseccao_values[i], n_elementos_compras);
-            similaridade_values.push_back(similaridade);
-            cont++;
-        }
+        int a = interseccao_row_ptr[i];
+        int fimA = interseccao_row_ptr[i + 1];
+
     }
 }
 
