@@ -76,24 +76,20 @@ void calculaInterseccaoRapida(int*** matrizInterseccao, int** matrizCompras, int
 }
 
 //T = transposta
-void calculaInterseccaoCSR(vector<double>& compras_values,
-                           vector<int>& compras_index,
-                           vector<int>& compras_row_ptr,
-                           vector<double>& interseccao_values,
-                           vector<int>& interseccao_index,
-                           vector<int>& interseccao_row_ptr
-                           ){
+void calculaInterseccaoCSR(vector<double>& compras_values, vector<int>& compras_index, vector<int>& compras_row_ptr, 
+                           vector<double>& interseccao_values, vector<int>& interseccao_index, vector<int>& interseccao_row_ptr){
     
     interseccao_row_ptr.push_back(0);
     int cont = 0;
-
     int n_linhas = compras_row_ptr.size() - 1;
+
     for (int i = 0; i < n_linhas - 1; i++){
-        for (int iT = 0; iT < n_linhas; iT++){
+        for (int j = 0; j < n_linhas; j++){
+
             int a = compras_row_ptr[i];
             int fimA = compras_row_ptr[i + 1];
-            int aT = compras_row_ptr[iT];
-            int fimAT = compras_row_ptr[iT + 1];
+            int aT = compras_row_ptr[j];
+            int fimAT = compras_row_ptr[j + 1];
             double soma = 0;
 
 
@@ -112,7 +108,7 @@ void calculaInterseccaoCSR(vector<double>& compras_values,
 
             if (soma > 0){
                     interseccao_values.push_back(soma);
-                    interseccao_index.push_back(iT);
+                    interseccao_index.push_back(j);
             }
         }
         interseccao_row_ptr.push_back(cont);
