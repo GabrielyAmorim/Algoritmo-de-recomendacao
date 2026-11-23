@@ -17,7 +17,7 @@ vector<int> criaLista(double** matrizSimilaridade, int n_clientes, int cliente){
 
         double nivelSimilar = matrizSimilaridade[cliente][i];
 
-        if(nivelSimilar < 1.0 && nivelSimilar > 0.0){
+        if(nivelSimilar < 1.0 && nivelSimilar >= 0.0){
             vizinhos.push_back(i);
         }
     }
@@ -41,7 +41,7 @@ vector<int> criaListaCSR(const vector<double>& similaridade_values, const vector
 
         double nivelSimilar = similaridade_values[i];
 
-        if(nivelSimilar < 1.0 && nivelSimilar > 0.0){
+        if(nivelSimilar < 1.0 && nivelSimilar >= 0.0){
             vizinhos.push_back(similaridade_index[i]);
         }
     }

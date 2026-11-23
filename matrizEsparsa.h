@@ -2,6 +2,7 @@
 #define MATRIZESPARSA_H
 
 #include <vector>
+using namespace std;
 
 typedef struct{
     vector<double> values;

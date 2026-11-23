@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <ctime>
 #include "stdlib.h"
+#include <vector>
 
 void mostraUso(const char *programa){
     printf("Uso:\n");
@@ -64,7 +65,7 @@ int main(int argc, char *argv[]) {
 
     else{
 
-        criaCSRMatrizCompras(lista.compras, n_produtos, lista.matrizComprasCSR.values, lista.matrizComprasCSR.col_index,
+        criaCSRMatrizCompras(lista.compras, lista.matrizComprasCSR.values, lista.matrizComprasCSR.col_index,
                              lista.matrizComprasCSR.row_ptr);
 
         calculaInterseccaoCSR(lista.matrizComprasCSR.values, lista.matrizComprasCSR.col_index, lista.matrizComprasCSR.row_ptr,

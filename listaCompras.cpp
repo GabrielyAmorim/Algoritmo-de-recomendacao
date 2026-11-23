@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <algorithm>
+#include <vector>
 
 using namespace std;
 
@@ -89,8 +90,8 @@ void criaMatrizCompras(const vector<list<int>>& compras, int n_clientes, int n_p
     }
 }
 
-void criaCSRMatrizCompras(const vector<list<int>>& compras, int n_colunas, vector<double>& values,
-    vector<int>& col_index, vector<int>& row_ptr){ 
+void criaCSRMatrizCompras(const vector<list<int>>& compras, vector<double>& values,
+                          vector<int>& col_index, vector<int>& row_ptr){ 
 
     int count = 0;
 

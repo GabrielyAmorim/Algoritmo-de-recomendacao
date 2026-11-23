@@ -2,6 +2,7 @@
 #define SIMILARIDADE_H
 #include "listaCompras.h"
 #include "matrizEsparsa.h"
+#include <vector>
 
 typedef struct{
     int** matrizInterseccao;

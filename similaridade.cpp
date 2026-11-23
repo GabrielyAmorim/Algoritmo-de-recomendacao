@@ -2,6 +2,7 @@
 #include "matrizEsparsa.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 
 void calculaInterseccaoLenta(int*** matrizInterseccao, int** matrizCompras, int n_clientes, int n_produtos){
     int matrizTransposta[n_produtos][n_clientes];
@@ -95,7 +96,7 @@ void calculaInterseccaoCSR(const vector<double>& compras_values, const vector<in
 
             while(a < fimA && b < fimB){
 
-                if (compras_index[a] == compras_index[b]){
+                if (compras_index[a] == compras_index[b]){ 
                     soma += compras_values[a] * compras_values[b];
                     a++;
                     b++;
