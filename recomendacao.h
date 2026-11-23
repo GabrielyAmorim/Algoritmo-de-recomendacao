@@ -14,5 +14,6 @@ vector<int> criaLista(double**, int, int);
 vector<Item> criaRanqueamento(int);
 bool ordenaPorScore(const Item&, const Item&);
 void recomendarProduto(const vector<string>&, const vector<list<int>>&, double**, int, int, int, int);
+// void recomendarProdutoCSR();
 
 #endif

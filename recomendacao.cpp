@@ -71,7 +71,7 @@ void recomendarProduto(const vector<string>& nomeProdutos, const vector<list<int
 
     sort(R.begin(), R.end(), ordenaPorScore);
 
-    int recomendacoes;
+    int recomendacoes = 0;
     for(int i = 0; i < n_produtos && recomendacoes < k; i++){
         int produto = R[i].produto;
 

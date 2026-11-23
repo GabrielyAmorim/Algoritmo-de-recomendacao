@@ -75,47 +75,46 @@ void calculaInterseccaoRapida(int*** matrizInterseccao, int** matrizCompras, int
     }
 }
 
-//T = transposta
-void calculaInterseccaoCSR(const vector<double>& compras_values,
-                           const vector<int>& compras_index,
-                           const vector<int>& compras_row_ptr, 
-                           vector<double>& interseccao_values,
-                           vector<int>& interseccao_index,
-                           vector<int>& interseccao_row_ptr
-                           ){
+void calculaInterseccaoCSR(const vector<double>& compras_values, const vector<int>& compras_index, const vector<int>& compras_row_ptr, 
+                           vector<double>& interseccao_values, vector<int>& interseccao_index, vector<int>& interseccao_row_ptr){
     
     interseccao_row_ptr.push_back(0);
     int cont = 0;
     int n_linhas = compras_row_ptr.size() - 1;
 
-    for (int i = 0; i < n_linhas - 1; i++){
+    for (int i = 0; i < n_linhas; i++){
         for (int j = 0; j < n_linhas; j++){
 
             int a = compras_row_ptr[i];
             int fimA = compras_row_ptr[i + 1];
-            int aT = compras_row_ptr[j];
-            int fimAT = compras_row_ptr[j + 1];
+
+            int b = compras_row_ptr[j];
+            int fimB = compras_row_ptr[j + 1];
+
             double soma = 0;
 
+            while(a < fimA && b < fimB){
 
-            while (a < fimA && aT < fimAT){
-                if (compras_index[a] == compras_index[aT]){
-
-                    soma += compras_values[a] * compras_values[aT];
+                if (compras_index[a] == compras_index[b]){
+                    soma += compras_values[a] * compras_values[b];
                     a++;
-                    aT++;
-                } else if (compras_index[a]  < compras_index[aT]){
+                    b++;
+                }
+                else if(compras_index[a]  < compras_index[b]){
                     a++;
-                } else if (compras_index[a] > compras_index[aT]){
-                    aT++;
+                }
+                else{
+                    b++;
                 }
             }
 
-            if (soma > 0){
+            if(soma > 0){
                     interseccao_values.push_back(soma);
                     interseccao_index.push_back(j);
+                    cont ++;
             }
         }
+        
         interseccao_row_ptr.push_back(cont);
     }
 }
@@ -149,25 +148,20 @@ void calculaSimilaridade(double*** matrizSimilaridade, int** matrizInterseccao, 
     }
 }
 
-//S = similaridade
-void calculaSimilaridadeCSR(const vector<double>& interseccao_values,
-                            const vector<int>& interseccao_index,
-                            const vector<int>& interseccao_row_ptr,
-                            const vector<int>& compras_row_ptr,
-                            vector<double>& similaridade_values,
-                            vector<int>& similaridade_index,
-                            vector<int>& similaridade_row_ptr
-                            ){
-    
+void calculaSimilaridadeCSR(const vector<double>& interseccao_values, const vector<int>& interseccao_index,
+                            const vector<int>& interseccao_row_ptr, const vector<int>& compras_row_ptr,
+                            vector<double>& similaridade_values, vector<int>& similaridade_index, vector<int>& similaridade_row_ptr){
 
-    similaridade_row_ptr.push_back(0);
+    similaridade_row_ptr.push_back(0);                            
     int cont = 0;
     int n_linhas = interseccao_row_ptr.size() - 1;
+    
     for (int i = 0; i < n_linhas; i++){
         int n_produtos_cliente = compras_row_ptr[i + 1] - compras_row_ptr [i];
-        int n_interseccoes = interseccao_row_ptr[i + 1] - interseccao_row_ptr[i];
+        int inicio = interseccao_row_ptr[i];
+        int fim = interseccao_row_ptr[i + 1];
 
-        for (int j = 0; j < n_interseccoes; j++){
+        for (int j = inicio; j < fim; j++){
             similaridade_values.push_back(calculaJaccard(interseccao_values[j], n_produtos_cliente));
             similaridade_index.push_back(interseccao_index[j]);
             cont++;
@@ -204,3 +198,5 @@ void encontraSimilares(double** matrizSimilaridade, int n_clientes, int cliente)
         printf("Vizinho mais similar: %d (s = %.3f)\n", maisSimilar, menorValor);
     }
 }
+
+// void encontraSimilaresCSR();
