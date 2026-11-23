@@ -20,8 +20,11 @@ typedef struct{
 } ListaCompras;
 
 int lerArquivo(ListaCompras *, const char *);
+
 void criaMatrizCompras(const vector<list<int>>&, int, int, int***);
+
 void criaCSRMatrizCompras(const vector<list<int>>&, int, vector<double>&, vector<int>&, vector<int>&);
+
 void exibeLista(const vector<string>&, const vector<list<int>>&, const vector<string>&);
 
 #endif
