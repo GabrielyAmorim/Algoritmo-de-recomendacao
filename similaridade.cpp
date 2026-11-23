@@ -76,8 +76,13 @@ void calculaInterseccaoRapida(int*** matrizInterseccao, int** matrizCompras, int
 }
 
 //T = transposta
-void calculaInterseccaoCSR(vector<double>& compras_values, vector<int>& compras_index, vector<int>& compras_row_ptr, 
-                           vector<double>& interseccao_values, vector<int>& interseccao_index, vector<int>& interseccao_row_ptr){
+void calculaInterseccaoCSR(const vector<double>& compras_values,
+                           const vector<int>& compras_index,
+                           const vector<int>& compras_row_ptr, 
+                           vector<double>& interseccao_values,
+                           vector<int>& interseccao_index,
+                           vector<int>& interseccao_row_ptr
+                           ){
     
     interseccao_row_ptr.push_back(0);
     int cont = 0;
@@ -145,13 +150,13 @@ void calculaSimilaridade(double*** matrizSimilaridade, int** matrizInterseccao, 
 }
 
 //S = similaridade
-void calculaSimilaridadeCSR(vector<double>& interseccao_values,
-                            vector<int>& interseccao_index,
-                            vector<int>& interseccao_row_ptr,
+void calculaSimilaridadeCSR(const vector<double>& interseccao_values,
+                            const vector<int>& interseccao_index,
+                            const vector<int>& interseccao_row_ptr,
+                            const vector<int>& compras_row_ptr,
                             vector<double>& similaridade_values,
                             vector<int>& similaridade_index,
-                            vector<int>& similaridade_row_ptr,
-                            vector<int>& compras_row_ptr
+                            vector<int>& similaridade_row_ptr
                             ){
     
 
@@ -160,10 +165,11 @@ void calculaSimilaridadeCSR(vector<double>& interseccao_values,
     int n_linhas = interseccao_row_ptr.size() - 1;
     for (int i = 0; i < n_linhas; i++){
         int n_produtos_cliente = compras_row_ptr[i + 1] - compras_row_ptr [i];
+        int n_interseccoes = interseccao_row_ptr[i + 1] - interseccao_row_ptr[i];
 
-        for (int j = 0; j < n_linhas; j++){
-            similaridade_values.push_back(calculaJaccard(interseccao_values[cont], n_produtos_cliente));
-            similaridade_index.push_back(j);
+        for (int j = 0; j < n_interseccoes; j++){
+            similaridade_values.push_back(calculaJaccard(interseccao_values[j], n_produtos_cliente));
+            similaridade_index.push_back(interseccao_index[j]);
             cont++;
         }
 
