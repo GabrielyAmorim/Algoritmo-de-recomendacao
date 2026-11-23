@@ -104,9 +104,9 @@ void calculaInterseccaoCSR(vector<double>& compras_values,
                     a++;
                     aT++;
                 } else if (compras_index[a]  < compras_index[aT]){
-                        a++;
+                    a++;
                 } else if (compras_index[a] > compras_index[aT]){
-                        aT++;
+                    aT++;
                 }
             }
 
@@ -157,13 +157,21 @@ void calculaSimilaridadeCSR(vector<double>& interseccao_values,
                             vector<int>& similaridade_row_ptr,
                             vector<int>& compras_row_ptr
                             ){
+    
 
+    similaridade_row_ptr.push_back(0);
+    int cont = 0;
     int n_linhas = interseccao_row_ptr.size() - 1;
-    for (int i; i < n_linhas; i++){
+    for (int i = 0; i < n_linhas; i++){
+        int n_produtos_cliente = compras_row_ptr[i + 1] - compras_row_ptr [i];
 
-        int a = interseccao_row_ptr[i];
-        int fimA = interseccao_row_ptr[i + 1];
+        for (int j = 0; j < n_linhas; j++){
+            similaridade_values.push_back(calculaJaccard(interseccao_values[cont], n_produtos_cliente));
+            similaridade_index.push_back(j);
+            cont++;
+        }
 
+        similaridade_row_ptr.push_back(cont);
     }
 }
 
