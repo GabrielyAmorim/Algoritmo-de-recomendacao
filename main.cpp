@@ -22,9 +22,15 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    int modo = atoi(argv[2]);
     int opcao = atoi(argv[3]);
 
-    if((opcao == 2 && argc != 5) || (opcao == 3 && argc != 6)){
+    if(modo < 1 || modo > 3){
+        mostraUso(argv[0]);
+        return 1;
+    }
+
+    if((opcao == 1 && argc != 4) || (opcao == 2 && argc != 5) || (opcao == 3 && argc != 6) || (opcao < 1 || opcao > 3)){
         mostraUso(argv[0]);
         return 1;
     }
@@ -39,25 +45,25 @@ int main(int argc, char *argv[]) {
 
     int n_clientes = lista.codigoClientes.size();
     int n_produtos = lista.nomeProdutos.size();
+    
     Similaridade simi;
 
-    if (atoi(argv[2]) != 3){
+    if(modo != 3){
+
         criaMatrizCompras(lista.compras, n_clientes, n_produtos, &lista.matrizCompras);
 
-        if(atoi(argv[2]) == 1){
+        if(modo == 1){
             calculaInterseccaoLenta(&simi.matrizInterseccao, lista.matrizCompras, n_clientes, n_produtos);
         }
-        else if(atoi(argv[2]) == 2){
-            calculaInterseccaoRapida(&simi.matrizInterseccao, lista.matrizCompras, n_clientes, n_produtos);
-        } 
         else{
-            mostraUso(argv[0]);
-            return 1;
+            calculaInterseccaoRapida(&simi.matrizInterseccao, lista.matrizCompras, n_clientes, n_produtos);
         }
 
         calculaSimilaridade(&simi.matrizSimilaridade, simi.matrizInterseccao, lista.compras, n_clientes);
     }
-    else if (atoi(argv[2]) == 3){
+
+    else{
+
         criaCSRMatrizCompras(lista.compras, n_produtos, lista.matrizComprasCSR.values, lista.matrizComprasCSR.col_index,
                              lista.matrizComprasCSR.row_ptr);
 
@@ -68,10 +74,6 @@ int main(int argc, char *argv[]) {
                                lista.matrizComprasCSR.row_ptr, simi.matrizSimilaridadeCSR.values, simi.matrizSimilaridadeCSR.col_index,
                                simi.matrizSimilaridadeCSR.row_ptr);
     }
-    else{
-        mostraUso(argv[0]);
-        return 1;
-    }
     
     clock_t fim = clock();
     double tempo = double(fim - inicio) / CLOCKS_PER_SEC;
@@ -79,31 +81,47 @@ int main(int argc, char *argv[]) {
     switch(opcao){
 
         case 1:
+
             exibeLista(lista.codigoClientes, lista.compras, lista.nomeProdutos);
             break;
 
         case 2:
-            encontraSimilares(simi.matrizSimilaridade, n_clientes, atoi(argv[4]));
+
+            if(modo == 3){
+                encontraSimilaresCSR(simi.matrizSimilaridadeCSR.values, simi.matrizSimilaridadeCSR.col_index,
+                                    simi.matrizSimilaridadeCSR.row_ptr, n_clientes, atoi(argv[4]));
+            }
+            else{
+                encontraSimilares(simi.matrizSimilaridade, n_clientes, atoi(argv[4]));
+            }
+            
             break;
 
         case 3:
-            recomendarProduto(lista.nomeProdutos, lista.compras, simi.matrizSimilaridade, n_clientes, 
-                n_produtos, atoi(argv[4]), atoi(argv[5]));
+
+            if(modo == 3){
+                recomendarProdutoCSR(lista.nomeProdutos, lista.compras, simi.matrizSimilaridadeCSR.values,
+                                    simi.matrizSimilaridadeCSR.col_index, simi.matrizSimilaridadeCSR.row_ptr, 
+                                    n_clientes, n_produtos, atoi(argv[4]), atoi(argv[5]));
+            }
+            else{
+                recomendarProduto(lista.nomeProdutos, lista.compras, simi.matrizSimilaridade, n_clientes, 
+                                n_produtos, atoi(argv[4]), atoi(argv[5]));
+            }
+
             break;
-
-        default:
-            printf("Opcao invalida.\n");
-            mostraUso(argv[0]);
     }
 
-    for(int i = 0; i < lista.codigoClientes.size(); i++){
-        free(simi.matrizInterseccao[i]);
-        free(simi.matrizSimilaridade[i]);
-        free(lista.matrizCompras[i]);
-    }
-    free(simi.matrizInterseccao);
-    free(simi.matrizSimilaridade);
-    free(lista.matrizCompras);
+    if(modo != 3){
+        for(int i = 0; i < lista.codigoClientes.size(); i++){
+            free(simi.matrizInterseccao[i]);
+            free(simi.matrizSimilaridade[i]);
+            free(lista.matrizCompras[i]);
+        }
+        free(simi.matrizInterseccao);
+        free(simi.matrizSimilaridade);
+        free(lista.matrizCompras);
+    }    
 
     printf("%f", tempo);
 
