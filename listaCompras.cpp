@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -97,7 +98,11 @@ void criaCSRMatrizCompras(const vector<list<int>>& compras, int n_colunas, vecto
 
     for(int i = 0; i < compras.size(); i ++){
 
-        for(int j : compras[i]){
+        vector<int> produtos(compras[i].begin(), compras[i].end());
+
+        sort(produtos.begin(), produtos.end());
+
+        for(int j : produtos){
 
             values.push_back(1);
             col_index.push_back(j);

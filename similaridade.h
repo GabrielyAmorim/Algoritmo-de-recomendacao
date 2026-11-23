@@ -15,8 +15,8 @@ void calculaInterseccaoRapida(int***, int** , int, int);
 void calculaInterseccaoCSR(const vector<double>&, const vector<int>&, const vector<int>&, vector<double>&, vector<int>&, vector<int>&);
 double calculaJaccard(double, double);
 void calculaSimilaridade(double***, int**, const vector<list<int>>&, int);
-void calculaSimilaridadeCSR(const vector<double>*, const vector<int>*, const vector<int>*, const vector<int>*, vector<double>*, vector<int>*, vector<int>* );
+void calculaSimilaridadeCSR(const vector<double>&, const vector<int>&, const vector<int>&, const vector<int>&, vector<double>&, vector<int>&, vector<int>&);
 void encontraSimilares(double**, int, int);
-// void encontraSimilaresCSR();
+void encontraSimilaresCSR(const vector<double>&, const vector<int>&, const vector<int>&, int, int);
 
 #endif

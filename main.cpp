@@ -58,31 +58,17 @@ int main(int argc, char *argv[]) {
         calculaSimilaridade(&simi.matrizSimilaridade, simi.matrizInterseccao, lista.compras, n_clientes);
     }
     else if (atoi(argv[2]) == 3){
-        criaCSRMatrizCompras(&lista.compras,
-                             n_produtos,
-                             &lista.matrizComprasCSR.values,
-                             &lista.matrizComprasCSR.col_index,
-                             &lista.matrizComprasCSR.row_ptr, 
-                             );
+        criaCSRMatrizCompras(lista.compras, n_produtos, lista.matrizComprasCSR.values, lista.matrizComprasCSR.col_index,
+                             lista.matrizComprasCSR.row_ptr);
 
-        calculaInterseccaoCSR(&lista.matrizComprasCSR.values,
-                              &lista.matrizComprasCSR.col_index,
-                              &lista.matrizComprasCSR.row_ptr,
-                              &simi.matrizInterseccaoCSR.values,
-                              &simi.matrizInterseccaoCSR.col_index,
-                              &simi.matrizInterseccaoCSR.row_ptr
-                              );
+        calculaInterseccaoCSR(lista.matrizComprasCSR.values, lista.matrizComprasCSR.col_index, lista.matrizComprasCSR.row_ptr,
+                              simi.matrizInterseccaoCSR.values, simi.matrizInterseccaoCSR.col_index, simi.matrizInterseccaoCSR.row_ptr);
 
-        calculaSimilaridadeCSR(&simi.matrizInterseccaoCSR.values,
-                               &simi.matrizInterseccaoCSR.col_index,
-                               &simi.matrizInterseccaoCSR.row_ptr,
-                               &lista.matrizComprasCSR.row_ptr,
-                               &simi.matrizSimilaridadeCSR.values,
-                               &simi.matrizSimilaridadeCSR.col_index,
-                               &simi.matrizSimilaridadeCSR.row_ptr
-                               );
+        calculaSimilaridadeCSR(simi.matrizInterseccaoCSR.values, simi.matrizInterseccaoCSR.col_index, simi.matrizInterseccaoCSR.row_ptr,
+                               lista.matrizComprasCSR.row_ptr, simi.matrizSimilaridadeCSR.values, simi.matrizSimilaridadeCSR.col_index,
+                               simi.matrizSimilaridadeCSR.row_ptr);
     }
-    else {
+    else{
         mostraUso(argv[0]);
         return 1;
     }

@@ -194,9 +194,41 @@ void encontraSimilares(double** matrizSimilaridade, int n_clientes, int cliente)
  
     if(maisSimilar == -1){
         printf("Nenhum cliente similar encontrado.\n");
-    } else {
-        printf("Vizinho mais similar: %d (s = %.3f)\n", maisSimilar, menorValor);
+    }
+    else{
+        printf("Cliente mais similar: %d (s = %.3f)\n", maisSimilar, menorValor);
     }
 }
 
-// void encontraSimilaresCSR();
+void encontraSimilaresCSR(const vector<double>& similaridade_values, const vector<int>& similaridade_index,
+    const vector<int>& similaridade_row_ptr, int n_clientes, int cliente){
+
+    if(cliente < 0 || cliente >= n_clientes){
+        printf("Cliente invalido.\n");
+        return;
+    }
+ 
+    double menorValor = 1.0;
+    int maisSimilar = -1;
+
+    int inicio = similaridade_row_ptr[cliente];
+    int fim = similaridade_row_ptr[cliente + 1];
+
+    for(int i = inicio; i < fim; i++){
+        if(similaridade_index[i] == cliente){
+            continue;
+        }
+
+        if(similaridade_values[i] < menorValor){
+            menorValor = similaridade_values[i];
+            maisSimilar = similaridade_index[i];
+        }
+    }
+
+    if(maisSimilar == -1){
+        printf("Nenhum cliente similar encontrado.\n");
+    } 
+    else{
+        printf("Cliente mais similar: %d (s = %.3f)\n", maisSimilar, menorValor);
+    }
+}

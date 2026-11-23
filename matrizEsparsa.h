@@ -2,7 +2,6 @@
 #define MATRIZESPARSA_H
 
 #include <vector>
-#include <list>
 
 typedef struct{
     vector<double> values;

@@ -91,3 +91,7 @@ void recomendarProduto(const vector<string>& nomeProdutos, const vector<list<int
         cout << "Nenhuma recomendacao disponivel" << endl;
     }  
 }
+
+void recomendarProdutoCSR(){
+    
+}
