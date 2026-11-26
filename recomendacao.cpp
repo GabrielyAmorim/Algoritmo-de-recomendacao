@@ -6,7 +6,7 @@
 
 using namespace std;
 
-vector<int> criaLista(double** matrizSimilaridade, int n_clientes, int cliente){
+vector<int> criaLista(const Similaridade *simi, int n_clientes, int cliente){
     vector<int> vizinhos;
 
     for(int i = 0; i < n_clientes; i ++){
@@ -15,7 +15,7 @@ vector<int> criaLista(double** matrizSimilaridade, int n_clientes, int cliente){
             continue;
         }
 
-        double nivelSimilar = matrizSimilaridade[cliente][i];
+        double nivelSimilar = simi->matrizSimilaridade[cliente][i];
 
         if(nivelSimilar < 1.0 && nivelSimilar >= 0.0){
             vizinhos.push_back(i);
@@ -25,24 +25,23 @@ vector<int> criaLista(double** matrizSimilaridade, int n_clientes, int cliente){
     return vizinhos;
 }
 
-vector<int> criaListaCSR(const vector<double>& similaridade_values, const vector<int>& similaridade_index,
-    const vector<int>& similaridade_row_ptr, int cliente){
+vector<int> criaListaCSR(const Similaridade *simi, int cliente){
 
     vector<int> vizinhos;
 
-    int inicio = similaridade_row_ptr[cliente];
-    int fim = similaridade_row_ptr[cliente + 1];
+    int inicio = simi->matrizSimilaridadeCSR.row_ptr[cliente];
+    int fim = simi->matrizSimilaridadeCSR.row_ptr[cliente + 1];
 
     for(int i = inicio; i < fim; i ++){
         
-        if(similaridade_index[i] == cliente){
+        if(simi->matrizSimilaridadeCSR.col_index[i] == cliente){
             continue;
         }
 
-        double nivelSimilar = similaridade_values[i];
+        double nivelSimilar = simi->matrizSimilaridadeCSR.values[i];
 
         if(nivelSimilar < 1.0 && nivelSimilar >= 0.0){
-            vizinhos.push_back(similaridade_index[i]);
+            vizinhos.push_back(simi->matrizSimilaridadeCSR.col_index[i]);
         }
     }
 
@@ -64,8 +63,8 @@ bool ordenaPorScore(const Item &a, const Item &b){
     return a.score < b.score;
 }
 
-void recomendarProduto(const vector<string>& nomeProdutos, const vector<list<int>>& compras, double** matrizSimilaridade,
-    int n_clientes, int n_produtos, int cliente, int k){
+void recomendarProduto(const ListaCompras *lista, const Similaridade *simi, 
+                       int n_clientes, int n_produtos, int cliente, int k){
 
     if(k <= 0){
         printf("K invalido.");
@@ -77,19 +76,19 @@ void recomendarProduto(const vector<string>& nomeProdutos, const vector<list<int
         return;
     }
 
-    vector<int> vizinhos = criaLista(matrizSimilaridade, n_clientes, cliente);
+    vector<int> vizinhos = criaLista(simi, n_clientes, cliente);
 
     vector<Item> R = criaRanqueamento(n_produtos);
 
     for(int i = 0; i < vizinhos.size(); i++){
 
-        for(int j : compras[vizinhos[i]]){
+        for(int j : lista->compras[vizinhos[i]]){
             
-            if(find(compras[cliente].begin(), compras[cliente].end(), j) != compras[cliente].end()){
+            if(find(lista->compras[cliente].begin(), lista->compras[cliente].end(), j) != lista->compras[cliente].end()){
                 continue;
             }    
 
-            R[j].score *= matrizSimilaridade[cliente][vizinhos[i]];
+            R[j].score *= simi->matrizSimilaridade[cliente][vizinhos[i]];
         }
     }
 
@@ -108,11 +107,11 @@ void recomendarProduto(const vector<string>& nomeProdutos, const vector<list<int
             continue;
         }
 
-        if(find(compras[cliente].begin(), compras[cliente].end(), produto) != compras[cliente].end()){
+        if(find(lista->compras[cliente].begin(), lista->compras[cliente].end(), produto) != lista->compras[cliente].end()){
             continue;
         }
 
-        cout << nomeProdutos[produto] << endl;
+        cout << lista->nomeProdutos[produto] << endl;
         recomendacoes++;
     }
 
@@ -121,9 +120,8 @@ void recomendarProduto(const vector<string>& nomeProdutos, const vector<list<int
     }  
 }
 
-void recomendarProdutoCSR(const vector<string>& nomeProdutos, const vector<list<int>>& compras,
-                         const vector<double>& similaridade_values, const vector<int>& similaridade_index,
-                         const vector<int>& similaridade_row_ptr, int n_clientes, int n_produtos, int cliente, int k){
+void recomendarProdutoCSR(const ListaCompras *lista, const Similaridade *simi,
+                          int n_clientes, int n_produtos, int cliente, int k){
 
     if(k <= 0){
         printf("K invalido.");
@@ -135,27 +133,27 @@ void recomendarProdutoCSR(const vector<string>& nomeProdutos, const vector<list<
         return;
     }
 
-    vector<int> vizinhos = criaListaCSR(similaridade_values,similaridade_index, similaridade_row_ptr, cliente);
+    vector<int> vizinhos = criaListaCSR(simi, cliente);
 
     vector<Item> R = criaRanqueamento(n_produtos);
 
     for(int i = 0; i < vizinhos.size(); i++){
 
-        int inicio = similaridade_row_ptr[cliente];
-        int fim = similaridade_row_ptr[cliente + 1];
+        int inicio = simi->matrizSimilaridadeCSR.row_ptr[cliente];
+        int fim = simi->matrizSimilaridadeCSR.row_ptr[cliente + 1];
 
         double nivelSimilar = 1.0;
 
         for(int j = inicio; j < fim; j++){
-            if(similaridade_index[j] == vizinhos[i]){
-                nivelSimilar = similaridade_values[j];
+            if(simi->matrizSimilaridadeCSR.col_index[j] == vizinhos[i]){
+                nivelSimilar = simi->matrizSimilaridadeCSR.values[j];
                 break;
             }
         }
 
-        for(int produto: compras[vizinhos[i]]){
+        for(int produto: lista->compras[vizinhos[i]]){
             
-            if(find(compras[cliente].begin(), compras[cliente].end(), produto) != compras[cliente].end()){
+            if(find(lista->compras[cliente].begin(), lista->compras[cliente].end(), produto) != lista->compras[cliente].end()){
                 continue;
             }    
 
@@ -178,11 +176,11 @@ void recomendarProdutoCSR(const vector<string>& nomeProdutos, const vector<list<
             continue;
         }
 
-        if(find(compras[cliente].begin(), compras[cliente].end(), produto) != compras[cliente].end()){
+        if(find(lista->compras[cliente].begin(), lista->compras[cliente].end(), produto) != lista->compras[cliente].end()){
             continue;
         }
 
-        cout << nomeProdutos[produto] << endl;
+        cout << lista->nomeProdutos[produto] << endl;
         recomendacoes++;
     }
 

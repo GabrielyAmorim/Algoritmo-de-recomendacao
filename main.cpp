@@ -51,29 +51,25 @@ int main(int argc, char *argv[]) {
 
     if(modo != 3){
 
-        criaMatrizCompras(lista.compras, n_clientes, n_produtos, &lista.matrizCompras);
+        criaMatrizCompras(&lista, n_clientes, n_produtos);
 
         if(modo == 1){
-            calculaInterseccaoLenta(&simi.matrizInterseccao, lista.matrizCompras, n_clientes, n_produtos);
+            calculaInterseccaoLenta(&lista, &simi, n_clientes, n_produtos);
         }
         else{
-            calculaInterseccaoRapida(&simi.matrizInterseccao, lista.matrizCompras, n_clientes, n_produtos);
+            calculaInterseccaoRapida(&lista, &simi, n_clientes, n_produtos);
         }
 
-        calculaSimilaridade(&simi.matrizSimilaridade, simi.matrizInterseccao, lista.compras, n_clientes);
+        calculaSimilaridade(&lista, &simi, n_clientes);
     }
 
     else{
 
-        criaCSRMatrizCompras(lista.compras, lista.matrizComprasCSR.values, lista.matrizComprasCSR.col_index,
-                             lista.matrizComprasCSR.row_ptr);
+        criaCSRMatrizCompras(&lista);
 
-        calculaInterseccaoCSR(lista.matrizComprasCSR.values, lista.matrizComprasCSR.col_index, lista.matrizComprasCSR.row_ptr,
-                              simi.matrizInterseccaoCSR.values, simi.matrizInterseccaoCSR.col_index, simi.matrizInterseccaoCSR.row_ptr);
+        calculaInterseccaoCSR(&lista, &simi);
 
-        calculaSimilaridadeCSR(simi.matrizInterseccaoCSR.values, simi.matrizInterseccaoCSR.col_index, simi.matrizInterseccaoCSR.row_ptr,
-                               lista.matrizComprasCSR.row_ptr, simi.matrizSimilaridadeCSR.values, simi.matrizSimilaridadeCSR.col_index,
-                               simi.matrizSimilaridadeCSR.row_ptr);
+        calculaSimilaridadeCSR(&lista, &simi);
     }
     
     clock_t fim = clock();
@@ -83,17 +79,16 @@ int main(int argc, char *argv[]) {
 
         case 1:
 
-            exibeLista(lista.codigoClientes, lista.compras, lista.nomeProdutos);
+            exibeLista(&lista);
             break;
 
         case 2:
 
             if(modo == 3){
-                encontraSimilaresCSR(simi.matrizSimilaridadeCSR.values, simi.matrizSimilaridadeCSR.col_index,
-                                    simi.matrizSimilaridadeCSR.row_ptr, n_clientes, atoi(argv[4]));
+                encontraSimilaresCSR(&simi, n_clientes, atoi(argv[4]));
             }
             else{
-                encontraSimilares(simi.matrizSimilaridade, n_clientes, atoi(argv[4]));
+                encontraSimilares(&simi, n_clientes, atoi(argv[4]));
             }
             
             break;
@@ -101,13 +96,10 @@ int main(int argc, char *argv[]) {
         case 3:
 
             if(modo == 3){
-                recomendarProdutoCSR(lista.nomeProdutos, lista.compras, simi.matrizSimilaridadeCSR.values,
-                                    simi.matrizSimilaridadeCSR.col_index, simi.matrizSimilaridadeCSR.row_ptr, 
-                                    n_clientes, n_produtos, atoi(argv[4]), atoi(argv[5]));
+                recomendarProdutoCSR(&lista, &simi, n_clientes, n_produtos, atoi(argv[4]), atoi(argv[5]));
             }
             else{
-                recomendarProduto(lista.nomeProdutos, lista.compras, simi.matrizSimilaridade, n_clientes, 
-                                n_produtos, atoi(argv[4]), atoi(argv[5]));
+                recomendarProduto(&lista, &simi, n_clientes, n_produtos, atoi(argv[4]), atoi(argv[5]));
             }
 
             break;

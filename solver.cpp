@@ -7,111 +7,109 @@
 
 #include <string>
 #include <vector>
+#include <ctime>
 
 using namespace std;
 namespace py = pybind11;
 
-ListaCompras lista;
-Similaridade similaridade;
+void recomendar(vector<string> codigo_clientes, map<string, int> mapa_clientes, vector<string>nome_produtos,
+                map<string, int> mapa_produtos, vector<list<int>> compras, 
+                int modo, int opcao, int cliente, int k){
 
-void cria_lista_compras(const vector<vector<string>>& dados){
-    int indiceCliente;
-    int indiceProduto;
+    ListaCompras lista;
+
+    lista.codigoClientes = codigo_clientes;
+    lista.mapaClientes = mapa_clientes;
+    lista.nomeProdutos = nome_produtos;
+    lista.mapaProdutos = mapa_produtos;
+    lista.compras = compras;
+
+    clock_t inicio = clock();
+
+    int n_clientes = lista.codigoClientes.size();
+    int n_produtos = lista.nomeProdutos.size();
     
-    for(int i = 0; i < dados.size(); i ++){
-        string cliente = dados[i][0];
-        string produto = dados[i][1];
+    Similaridade simi;
 
+    if(modo != 3){
 
-        if(lista.mapaClientes.find(cliente) != lista.mapaClientes.end()){
-            indiceCliente = lista.mapaClientes[cliente];
-        } 
+        criaMatrizCompras(&lista, n_clientes, n_produtos);
+
+        if(modo == 1){
+            calculaInterseccaoLenta(&lista, &simi, n_clientes, n_produtos);
+        }
         else{
-            indiceCliente = lista.codigoClientes.size();
-            lista.codigoClientes.push_back(cliente);
-            lista.mapaClientes[cliente] = indiceCliente;
-            lista.compras.push_back(list<int>());
+            calculaInterseccaoRapida(&lista, &simi, n_clientes, n_produtos);
         }
 
-        if(lista.mapaProdutos.find(produto) != lista.mapaProdutos.end()){
-            indiceProduto = lista.mapaProdutos[produto];
-        } 
-        else{
-            indiceProduto = lista.nomeProdutos.size();
-            lista.nomeProdutos.push_back(produto);
-            lista.mapaProdutos[produto] = indiceProduto;
+        calculaSimilaridade(&lista, &simi, n_clientes);
+    }
+
+    else{
+
+        criaCSRMatrizCompras(&lista);
+
+        calculaInterseccaoCSR(&lista, &simi);
+
+        calculaSimilaridadeCSR(&lista, &simi);
+    }
+    
+    clock_t fim = clock();
+    double tempo = double(fim - inicio) / CLOCKS_PER_SEC;
+
+    switch(opcao){
+
+        case 1:
+
+            exibeLista(&lista);
+            break;
+
+        case 2:
+
+            if(modo == 3){
+                encontraSimilaresCSR(&simi, n_clientes, cliente);
+            }
+            else{
+                encontraSimilares(&simi, n_clientes, cliente);
+            }
+            
+            break;
+
+        case 3:
+
+            if(modo == 3){
+                recomendarProdutoCSR(&lista, &simi, n_clientes, n_produtos, cliente, k);
+            }
+            else{
+                recomendarProduto(&lista, &simi, n_clientes, n_produtos, cliente, k);
+            }
+
+            break;
+    }
+
+    if(modo != 3){
+        for(int i = 0; i < lista.codigoClientes.size(); i++){
+            free(simi.matrizInterseccao[i]);
+            free(simi.matrizSimilaridade[i]);
+            free(lista.matrizCompras[i]);
         }
+        free(simi.matrizInterseccao);
+        free(simi.matrizSimilaridade);
+        free(lista.matrizCompras);
+    }    
 
-        int jaTem = 0;
-        for(int k : lista.compras[indiceCliente]){
-            if(k == indiceProduto){
-                jaTem = 1;
-                break;
-            }    
-        }
+    printf("%f", tempo);
 
-        if(jaTem == 0){
-            lista.compras[indiceCliente].push_back(indiceProduto);
-        }
-    } 
-}
-
-void exibir_lista_compras(){
-
-    exibeLista(lista.codigoClientes, lista.compras, lista.nomeProdutos);
-
-}
-
-void calcular_similaridades(){
-
-    criaCSRMatrizCompras(lista.compras, lista.matrizComprasCSR.values, lista.matrizComprasCSR.col_index, 
-        lista.matrizComprasCSR.row_ptr);
-
-    calculaInterseccaoCSR(lista.matrizComprasCSR.values, lista.matrizComprasCSR.col_index, lista.matrizComprasCSR.row_ptr,
-        similaridade.matrizInterseccaoCSR.values, similaridade.matrizInterseccaoCSR.col_index, 
-        similaridade.matrizInterseccaoCSR.row_ptr);
-
-    calculaSimilaridadeCSR(similaridade.matrizInterseccaoCSR.values, similaridade.matrizInterseccaoCSR.col_index,
-        similaridade.matrizInterseccaoCSR.row_ptr, lista.matrizComprasCSR.row_ptr, similaridade.matrizSimilaridadeCSR.values,
-        similaridade.matrizSimilaridadeCSR.col_index, similaridade.matrizSimilaridadeCSR.row_ptr);
-
-    printf("Matrizes CSR e similaridade calculadas com sucesso!");
-
-}
-
-void encontra_similares(int indiceCliente){
-
-    encontraSimilaresCSR(similaridade.matrizSimilaridadeCSR.values, similaridade.matrizSimilaridadeCSR.col_index,
-        similaridade.matrizSimilaridadeCSR.row_ptr, lista.codigoClientes.size(), indiceCliente);
-
+    return;
 }
 
 PYBIND11_MODULE(nosso_solver, m){
     m.doc() = "Integração Python + C++ com pybind11";
 
-    m.def(
-        "cria_lista_compras",
-        &cria_lista_compras,
-        "Recebe um vetor de vetores que representam cada compra registrada."
-    );
-
      m.def(
-        "exibir_lista_compras",
-        &exibir_lista_compras,
-        "Exibe os produtos comprados por cada cliente."
+        "recomendar",
+        &recomendar,
+        "Realiza todo o sistema de recomendação."
     );
-
-    m.def(
-        "calcular_similaridades",
-        &calcular_similaridades,
-        "Constrói as matrizes CSR e calcula as similaridades."
-    );
-
-    m.def(
-        "encontra_similares",
-        &encontra_similares,
-        "Encontra o cliente mais similar ao cliente informado."
-    );
-
 
 }    

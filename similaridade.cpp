@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <vector>
 
-void calculaInterseccaoLenta(int*** matrizInterseccao, int** matrizCompras, int n_clientes, int n_produtos){
+void calculaInterseccaoLenta(const ListaCompras *lista, Similaridade *simi, int n_clientes, int n_produtos){
     int** matrizTransposta = (int**)malloc(n_produtos * sizeof(int*));
     if (matrizTransposta == NULL){
         printf("Erro ao alocar memoria.");
@@ -19,35 +19,35 @@ void calculaInterseccaoLenta(int*** matrizInterseccao, int** matrizCompras, int 
         }
     }
 
-    *matrizInterseccao = (int**)malloc(n_clientes * sizeof(int*));
-    if (*matrizInterseccao == NULL){
+    simi->matrizInterseccao = (int**)malloc(n_clientes * sizeof(int*));
+    if (simi->matrizInterseccao == NULL){
         printf("Erro ao alocar memoria. 2");
         return;
     }
 
     for (int i = 0; i < n_clientes; i++){
-        (*matrizInterseccao)[i] = (int*)malloc(n_clientes * sizeof(int));
+        (simi->matrizInterseccao)[i] = (int*)malloc(n_clientes * sizeof(int));
 
-        if ((*matrizInterseccao)[i] == NULL){
+        if ((simi->matrizInterseccao)[i] == NULL){
             printf("Erro ao alocar memoria. 2.1");
             return;
         }
 
         for (int j = 0; j < n_clientes; j++){
-            (*matrizInterseccao)[i][j] = 0;
+            (simi->matrizInterseccao)[i][j] = 0;
         }
     }
 
     for (int i = 0; i < n_clientes; i++){
         for (int j = 0; j < n_produtos; j++){
-            matrizTransposta[j][i] = matrizCompras[i][j];
+            matrizTransposta[j][i] = lista->matrizCompras[i][j];
         }
     }
 
     for (int i = 0; i < n_clientes; i++){
         for (int j = 0; j < n_clientes; j++){
             for (int k = 0; k < n_produtos; k++) {
-                (*matrizInterseccao)[i][j] += matrizCompras[i][k] * matrizTransposta[k][j];
+                (simi->matrizInterseccao)[i][j] += lista->matrizCompras[i][k] * matrizTransposta[k][j];
             }
         }
     }
@@ -58,25 +58,25 @@ void calculaInterseccaoLenta(int*** matrizInterseccao, int** matrizCompras, int 
     free(matrizTransposta);
 }
 
-void calculaInterseccaoRapida(int*** matrizInterseccao, int** matrizCompras, int n_clientes, int n_produtos){
+void calculaInterseccaoRapida(const ListaCompras *lista, Similaridade *simi, int n_clientes, int n_produtos){
 
-    *matrizInterseccao = (int**)malloc(n_clientes * sizeof(int*));
+    simi->matrizInterseccao = (int**)malloc(n_clientes * sizeof(int*));
     
-    if (*matrizInterseccao == NULL){
+    if (simi->matrizInterseccao == NULL){
         printf("Erro ao alocar memoria. 2");
         return;
     }
 
     for (int i = 0; i < n_clientes; i++){
-        (*matrizInterseccao)[i] = (int*)malloc(n_clientes * sizeof(int));
+        (simi->matrizInterseccao)[i] = (int*)malloc(n_clientes * sizeof(int));
 
-        if ((*matrizInterseccao)[i] == NULL){
+        if ((simi->matrizInterseccao)[i] == NULL){
             printf("Erro ao alocar memoria. 2.1");
             return;
         }
 
         for (int j = 0; j < n_clientes; j++){
-            (*matrizInterseccao)[i][j] = 0;
+            (simi->matrizInterseccao)[i][j] = 0;
         }
     }
 
@@ -85,40 +85,39 @@ void calculaInterseccaoRapida(int*** matrizInterseccao, int** matrizCompras, int
             int soma = 0;
 
             for(int k = 0; k < n_produtos; k++){
-                soma += matrizCompras[i][k] * matrizCompras[j][k]; 
+                soma += lista->matrizCompras[i][k] * lista->matrizCompras[j][k]; 
             }
-            (*matrizInterseccao)[i][j] = soma;
-            (*matrizInterseccao)[j][i] = soma;
+            (simi->matrizInterseccao)[i][j] = soma;
+            (simi->matrizInterseccao)[j][i] = soma;
         }
     }
 }
 
-void calculaInterseccaoCSR(const vector<double>& compras_values, const vector<int>& compras_index, const vector<int>& compras_row_ptr, 
-                           vector<double>& interseccao_values, vector<int>& interseccao_index, vector<int>& interseccao_row_ptr){
+void calculaInterseccaoCSR(const ListaCompras *lista, Similaridade *simi){
     
-    interseccao_row_ptr.push_back(0);
+    simi->matrizInterseccaoCSR.row_ptr.push_back(0);
     int cont = 0;
-    int n_linhas = compras_row_ptr.size() - 1;
+    int n_linhas = lista->matrizComprasCSR.row_ptr.size() - 1;
 
     for (int i = 0; i < n_linhas; i++){
         for (int j = 0; j < n_linhas; j++){
 
-            int a = compras_row_ptr[i];
-            int fimA = compras_row_ptr[i + 1];
+            int a = lista->matrizComprasCSR.row_ptr[i];
+            int fimA = lista->matrizComprasCSR.row_ptr[i + 1];
 
-            int b = compras_row_ptr[j];
-            int fimB = compras_row_ptr[j + 1];
+            int b = lista->matrizComprasCSR.row_ptr[j];
+            int fimB = lista->matrizComprasCSR.row_ptr[j + 1];
 
             double soma = 0;
 
             while(a < fimA && b < fimB){
 
-                if (compras_index[a] == compras_index[b]){ 
-                    soma += compras_values[a] * compras_values[b];
+                if (lista->matrizComprasCSR.col_index[a] == lista->matrizComprasCSR.col_index[b]){ 
+                    soma += lista->matrizComprasCSR.values[a] * lista->matrizComprasCSR.values[b];
                     a++;
                     b++;
                 }
-                else if(compras_index[a]  < compras_index[b]){
+                else if(lista->matrizComprasCSR.col_index[a]  < lista->matrizComprasCSR.col_index[b]){
                     a++;
                 }
                 else{
@@ -127,13 +126,13 @@ void calculaInterseccaoCSR(const vector<double>& compras_values, const vector<in
             }
 
             if(soma > 0){
-                    interseccao_values.push_back(soma);
-                    interseccao_index.push_back(j);
+                    simi->matrizInterseccaoCSR.values.push_back(soma);
+                    simi->matrizInterseccaoCSR.col_index.push_back(j);
                     cont ++;
             }
         }
         
-        interseccao_row_ptr.push_back(cont);
+        simi->matrizInterseccaoCSR.row_ptr.push_back(cont);
     }
 }
 
@@ -143,17 +142,17 @@ double calculaJaccard(double interseccao, double produtos_cliente){
     return similaridade;
 }
 
-void calculaSimilaridade(double*** matrizSimilaridade, int** matrizInterseccao, const vector<list<int>>& compras, int n_clientes){
+void calculaSimilaridade(const ListaCompras *lista, Similaridade *simi, int n_clientes){
 
-    *matrizSimilaridade = (double**)malloc(n_clientes * sizeof(double*));
-    if (*matrizSimilaridade == NULL){
+    simi->matrizSimilaridade = (double**)malloc(n_clientes * sizeof(double*));
+    if (simi->matrizSimilaridade == NULL){
         printf("Erro ao alocar memoria. 3");
         return;
     }
 
     for (int i = 0; i < n_clientes; i++){
-        (*matrizSimilaridade)[i] = (double*)malloc(n_clientes * sizeof(double));
-        if ((*matrizSimilaridade)[i] == NULL){
+        (simi->matrizSimilaridade)[i] = (double*)malloc(n_clientes * sizeof(double));
+        if ((simi->matrizSimilaridade)[i] == NULL){
             printf("Erro ao alocar memoria. 3.1");
             return;
         }
@@ -161,35 +160,33 @@ void calculaSimilaridade(double*** matrizSimilaridade, int** matrizInterseccao, 
 
     for (int i = 0; i < n_clientes; i++){
         for (int j = 0; j < n_clientes; j++){
-            (*matrizSimilaridade)[i][j] = calculaJaccard(matrizInterseccao[i][j], compras[i].size()); 
+            (simi->matrizSimilaridade)[i][j] = calculaJaccard(simi->matrizInterseccao[i][j], lista->compras[i].size()); 
         }
     }
 }
 
-void calculaSimilaridadeCSR(const vector<double>& interseccao_values, const vector<int>& interseccao_index,
-                            const vector<int>& interseccao_row_ptr, const vector<int>& compras_row_ptr,
-                            vector<double>& similaridade_values, vector<int>& similaridade_index, vector<int>& similaridade_row_ptr){
+void calculaSimilaridadeCSR(const ListaCompras *lista, Similaridade *simi){
 
-    similaridade_row_ptr.push_back(0);                            
+    simi->matrizSimilaridadeCSR.row_ptr.push_back(0);                            
     int cont = 0;
-    int n_linhas = interseccao_row_ptr.size() - 1;
+    int n_linhas = simi->matrizInterseccaoCSR.row_ptr.size() - 1;
     
     for (int i = 0; i < n_linhas; i++){
-        int n_produtos_cliente = compras_row_ptr[i + 1] - compras_row_ptr [i];
-        int inicio = interseccao_row_ptr[i];
-        int fim = interseccao_row_ptr[i + 1];
+        int n_produtos_cliente = lista->matrizComprasCSR.row_ptr[i + 1] - lista->matrizComprasCSR.row_ptr [i];
+        int inicio = simi->matrizInterseccaoCSR.row_ptr[i];
+        int fim = simi->matrizInterseccaoCSR.row_ptr[i + 1];
 
         for (int j = inicio; j < fim; j++){
-            similaridade_values.push_back(calculaJaccard(interseccao_values[j], n_produtos_cliente));
-            similaridade_index.push_back(interseccao_index[j]);
+            simi->matrizSimilaridadeCSR.values.push_back(calculaJaccard(simi->matrizInterseccaoCSR.values[j], n_produtos_cliente));
+            simi->matrizSimilaridadeCSR.col_index.push_back(simi->matrizInterseccaoCSR.col_index[j]);
             cont++;
         }
 
-        similaridade_row_ptr.push_back(cont);
+        simi->matrizSimilaridadeCSR.row_ptr.push_back(cont);
     }
 }
 
-void encontraSimilares(double** matrizSimilaridade, int n_clientes, int cliente){
+void encontraSimilares(const Similaridade *simi, int n_clientes, int cliente){
  
     if(cliente < 0 || cliente >= n_clientes){
         printf("Cliente invalido.\n");
@@ -204,8 +201,8 @@ void encontraSimilares(double** matrizSimilaridade, int n_clientes, int cliente)
             continue;
         }
 
-        if(matrizSimilaridade[cliente][i] < menorValor){
-            menorValor = matrizSimilaridade[cliente][i];
+        if(simi->matrizSimilaridade[cliente][i] < menorValor){
+            menorValor = simi->matrizSimilaridade[cliente][i];
             maisSimilar = i;
         }
     }
@@ -218,8 +215,7 @@ void encontraSimilares(double** matrizSimilaridade, int n_clientes, int cliente)
     }
 }
 
-void encontraSimilaresCSR(const vector<double>& similaridade_values, const vector<int>& similaridade_index,
-    const vector<int>& similaridade_row_ptr, int n_clientes, int cliente){
+void encontraSimilaresCSR(const Similaridade *simi, int n_clientes, int cliente){
 
     if(cliente < 0 || cliente >= n_clientes){
         printf("Cliente invalido.\n");
@@ -229,17 +225,17 @@ void encontraSimilaresCSR(const vector<double>& similaridade_values, const vecto
     double menorValor = 1.0;
     int maisSimilar = -1;
 
-    int inicio = similaridade_row_ptr[cliente];
-    int fim = similaridade_row_ptr[cliente + 1];
+    int inicio = simi->matrizSimilaridadeCSR.row_ptr[cliente];
+    int fim = simi->matrizSimilaridadeCSR.row_ptr[cliente + 1];
 
     for(int i = inicio; i < fim; i++){
-        if(similaridade_index[i] == cliente){
+        if(simi->matrizSimilaridadeCSR.col_index[i] == cliente){
             continue;
         }
 
-        if(similaridade_values[i] < menorValor){
-            menorValor = similaridade_values[i];
-            maisSimilar = similaridade_index[i];
+        if(simi->matrizSimilaridadeCSR.values[i] < menorValor){
+            menorValor = simi->matrizSimilaridadeCSR.values[i];
+            maisSimilar = simi->matrizSimilaridadeCSR.col_index[i];
         }
     }
 

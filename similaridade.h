@@ -11,22 +11,20 @@ typedef struct{
     CSR matrizSimilaridadeCSR;
 } Similaridade;
 
-void calculaInterseccaoLenta(int***, int**, int, int);
+void calculaInterseccaoLenta(const ListaCompras *, Similaridade *, int, int);
 
-void calculaInterseccaoRapida(int***, int** , int, int);
+void calculaInterseccaoRapida(const ListaCompras *, Similaridade *, int, int);
 
-void calculaInterseccaoCSR(const vector<double>&, const vector<int>&, const vector<int>&, vector<double>&, 
-                            vector<int>&, vector<int>&);
+void calculaInterseccaoCSR(const ListaCompras *, Similaridade *);
 
 double calculaJaccard(double, double);
 
-void calculaSimilaridade(double***, int**, const vector<list<int>>&, int);
+void calculaSimilaridade(const ListaCompras *, Similaridade *, int);
 
-void calculaSimilaridadeCSR(const vector<double>&, const vector<int>&, const vector<int>&, const vector<int>&, 
-                            vector<double>&, vector<int>&, vector<int>&);
+void calculaSimilaridadeCSR(const ListaCompras *, Similaridade *);
                             
-void encontraSimilares(double**, int, int);
+void encontraSimilares(const Similaridade *, int, int);
 
-void encontraSimilaresCSR(const vector<double>&, const vector<int>&, const vector<int>&, int, int);
+void encontraSimilaresCSR(const Similaridade *, int, int);
 
 #endif
