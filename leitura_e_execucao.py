@@ -11,7 +11,11 @@ def ler_dados(caminho_arquivo: str):
     registros = []
 
     for i in range(len(dados)):
-        registros.append((str(dados["COD_CLIENTE"][i]), str(dados["NOME_PRODUTO"][i])))
+
+        cliente = str(dados["COD_CLIENTE"][i])
+        produto = str(dados["NOME_PRODUTO"][i])
+
+        registros.append([cliente, produto])
 
     return registros 
 
@@ -20,6 +24,8 @@ def main():
     caminho_arquivo = "dados_vendas_cluster17.csv"
 
     dados = ler_dados(caminho_arquivo)
+
+    nosso_solver.criar_lista_compras(dados)
 
 
 if __name__ == "__main__":
