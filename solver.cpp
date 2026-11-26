@@ -56,6 +56,12 @@ void cria_lista_compras(const vector<vector<string>>& dados){
     } 
 }
 
+void exibir_lista_compras(){
+
+    exibeLista(lista.codigoClientes, lista.compras, lista.nomeProdutos);
+
+}
+
 PYBIND11_MODULE(nosso_solver, m){
     m.doc() = "Integração Python + C++ com pybind11";
 
@@ -64,4 +70,11 @@ PYBIND11_MODULE(nosso_solver, m){
         &cria_lista_compras,
         "Recebe um vetor de vetores que representam cada compra registrada."
     );
+
+     m.def(
+        "exibir_lista_compras",
+        &exibir_lista_compras,
+        "Exibe os produtos comprados por cada cliente."
+    );
+
 }    

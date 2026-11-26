@@ -27,6 +27,8 @@ def main():
 
     nosso_solver.cria_lista_compras(dados)
 
+    nosso_solver.exibir_lista_compras()
+
 
 if __name__ == "__main__":
     main()
