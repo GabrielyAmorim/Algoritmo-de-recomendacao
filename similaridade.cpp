@@ -5,7 +5,19 @@
 #include <vector>
 
 void calculaInterseccaoLenta(int*** matrizInterseccao, int** matrizCompras, int n_clientes, int n_produtos){
-    int matrizTransposta[n_produtos][n_clientes];
+    int** matrizTransposta = (int**)malloc(n_produtos * sizeof(int*));
+    if (matrizTransposta == NULL){
+        printf("Erro ao alocar memoria.");
+        return;
+    }
+
+    for (int i = 0; i < n_produtos; i++){
+        matrizTransposta[i] = (int*)malloc(n_clientes * sizeof(int));
+
+        if (matrizTransposta[i] == NULL){
+            printf("Erro ao alocar memoria.");
+        }
+    }
 
     *matrizInterseccao = (int**)malloc(n_clientes * sizeof(int*));
     if (*matrizInterseccao == NULL){
@@ -39,6 +51,11 @@ void calculaInterseccaoLenta(int*** matrizInterseccao, int** matrizCompras, int 
             }
         }
     }
+
+    for (int i = 0; i < n_produtos; i++){
+        free(matrizTransposta[i]);
+    }
+    free(matrizTransposta);
 }
 
 void calculaInterseccaoRapida(int*** matrizInterseccao, int** matrizCompras, int n_clientes, int n_produtos){
