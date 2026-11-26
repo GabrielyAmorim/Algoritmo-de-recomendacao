@@ -29,6 +29,11 @@ def main():
 
     nosso_solver.exibir_lista_compras()
 
+    nosso_solver.calcular_similaridades()
+
+    indice_cliente = int(input("\nDigite o indice do cliente: "))
+
+    nosso_solver.encontra_similares(indice_cliente)
 
 if __name__ == "__main__":
     main()

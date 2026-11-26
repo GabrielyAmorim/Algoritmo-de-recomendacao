@@ -62,6 +62,30 @@ void exibir_lista_compras(){
 
 }
 
+void calcular_similaridades(){
+
+    criaCSRMatrizCompras(lista.compras, lista.matrizComprasCSR.values, lista.matrizComprasCSR.col_index, 
+        lista.matrizComprasCSR.row_ptr);
+
+    calculaInterseccaoCSR(lista.matrizComprasCSR.values, lista.matrizComprasCSR.col_index, lista.matrizComprasCSR.row_ptr,
+        similaridade.matrizInterseccaoCSR.values, similaridade.matrizInterseccaoCSR.col_index, 
+        similaridade.matrizInterseccaoCSR.row_ptr);
+
+    calculaSimilaridadeCSR(similaridade.matrizInterseccaoCSR.values, similaridade.matrizInterseccaoCSR.col_index,
+        similaridade.matrizInterseccaoCSR.row_ptr, lista.matrizComprasCSR.row_ptr, similaridade.matrizSimilaridadeCSR.values,
+        similaridade.matrizSimilaridadeCSR.col_index, similaridade.matrizSimilaridadeCSR.row_ptr);
+
+    printf("Matrizes CSR e similaridade calculadas com sucesso!");
+
+}
+
+void encontra_similares(int indiceCliente){
+
+    encontraSimilaresCSR(similaridade.matrizSimilaridadeCSR.values, similaridade.matrizSimilaridadeCSR.col_index,
+        similaridade.matrizSimilaridadeCSR.row_ptr, lista.codigoClientes.size(), indiceCliente);
+
+}
+
 PYBIND11_MODULE(nosso_solver, m){
     m.doc() = "Integração Python + C++ com pybind11";
 
@@ -76,5 +100,18 @@ PYBIND11_MODULE(nosso_solver, m){
         &exibir_lista_compras,
         "Exibe os produtos comprados por cada cliente."
     );
+
+    m.def(
+        "calcular_similaridades",
+        &calcular_similaridades,
+        "Constrói as matrizes CSR e calcula as similaridades."
+    );
+
+    m.def(
+        "encontra_similares",
+        &encontra_similares,
+        "Encontra o cliente mais similar ao cliente informado."
+    );
+
 
 }    
