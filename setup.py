@@ -4,7 +4,7 @@ from pybind11.setup_helpers import Pybind11Extension, build_ext
 ext_modules = [
     Pybind11Extension(
         "nosso_solver",
-        ["binding.cpp", "listaCompras.cpp", "similaridade.cpp", "recomendacao.cpp", "solver.cpp"],
+        ["listaCompras.cpp", "similaridade.cpp", "recomendacao.cpp", "solver.cpp"],
         cxx_std=17,
     ),
 ]

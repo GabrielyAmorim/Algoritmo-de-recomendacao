@@ -21,11 +21,11 @@ def ler_dados(caminho_arquivo: str):
 
 def main():
 
-    caminho_arquivo = "dados_vendas_cluster17.csv"
+    caminho_arquivo = "dados/dados/dados_venda_cluster_17.csv"
 
     dados = ler_dados(caminho_arquivo)
 
-    nosso_solver.criar_lista_compras(dados)
+    nosso_solver.cria_lista_compras(dados)
 
 
 if __name__ == "__main__":
