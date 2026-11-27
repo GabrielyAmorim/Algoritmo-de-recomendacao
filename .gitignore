@@ -78,3 +78,5 @@ Testing/
 !.vscode/launch.json
 
 *.pyd
+
+__pycache__/

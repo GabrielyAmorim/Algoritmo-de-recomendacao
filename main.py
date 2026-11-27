@@ -4,7 +4,6 @@ import click
 
 #exemplo de execução: python main.py dados/dados/dados_venda_cluster_17.csv --modo 3 --opcao 3 --cliente 5 --numero-produtos 5
 
-
 @click.command()
 @click.argument('arquivo_csv', type=click.Path(exists=True))
 @click.option('-m', '--modo',
@@ -29,8 +28,6 @@ import click
               )
 
 def main(arquivo_csv, modo, opcao, cliente, numero_produtos):
-    """Algorítmo que recebe um ARQUIVO_CSV e retorna recomendações de produtos baseado no histórico de compras."""
-    #caminho_arquivo = "dados/dados/dados_venda_cluster_17.csv"
 
     codigo_clientes = []
     mapa_clientes = {}
