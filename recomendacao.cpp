@@ -60,6 +60,10 @@ vector<Item> criaRanqueamento(int n_produtos){
 }    
 
 bool ordenaPorScore(const Item &a, const Item &b){
+    if (a.score == b.score){
+        return a.produto < b.produto;
+    }
+    
     return a.score < b.score;
 }
 
